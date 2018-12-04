@@ -2,7 +2,8 @@ const assert = require("assert");
 const {read,
   createDetailsOf,
   getLinesFromTop,
-  getCharFromBeginning} = require("../src/headLib.js");
+  getCharFromBeginning,
+  filter} = require("../src/headLib.js");
 
 let readHelloWorld = function(file, encoding) {
   if(file && encoding) {
@@ -19,7 +20,7 @@ let readEmptyFile = function(file, encoding) {
 describe("read", function() {
 
   it("should return the content of provided file", function() {
-      assert(read(readHelloWorld, "../testFile", "utf8"), "helloWorld");
+      assert.deepEqual(read(readHelloWorld, "../testFile", "utf8"), "helloWorld");
     });
 
     it("should return an empty string when an empty file is provided", function() {
@@ -80,5 +81,32 @@ describe("getCharFromBeginning", function() {
   it("should return string of length equal to the bytes required", function() {
 
     assert.deepEqual(getCharFromBeginning(file1Content, 2), "th");
+  });
+});
+
+describe("filter", function() {
+  let file1Content = "this is a line 1\n" +
+                     "this is a line 2\n" +
+                     "this is a line 3\n" +
+                     "this is a line 4 \n";
+
+  it("should return an array empty string when number of lines required is 0 ", function() {
+    assert.deepEqual(filter([{fileName : "file1" , content : file1Content}], getLinesFromTop, 0), [""]);
+  });
+
+  it("should return an array of length equal to the num of lines", function() {
+
+    let expectedOutput = ["this is a line 1\n"+
+                         "this is a line 2"];
+
+    assert.deepEqual(filter([{fileName : "file1" , content : file1Content}], getLinesFromTop, 2), expectedOutput);
+  });
+
+  it("should return an array of empty string when number of char required is 0", function() {
+    assert.deepEqual(filter([{fileName : "file1" , content : file1Content}], getCharFromBeginning, 0), [""]);
+  });
+
+  it("should return an array of string of length equal to the num of char required", function() {
+    assert.deepEqual(filter([{fileName : "file1" , content : file1Content}], getCharFromBeginning, 2), ["th"]);
   });
 });

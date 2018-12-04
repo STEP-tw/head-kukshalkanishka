@@ -19,7 +19,15 @@ const getCharFromBeginning = function(fileContent, bytesRequired) {
   return fileContent.slice(0, bytesRequired);
 }
 
+const filter = function(filesDetail, option, num) {
+  return filesDetail.reduce((texts, file) =>{
+    texts.push(option(file.content, num));
+    return texts;
+  }, []);
+}
+
 exports.read = read;
 exports.createDetailsOf = createDetailsOf;
 exports.getLinesFromTop = getLinesFromTop;
 exports.getCharFromBeginning = getCharFromBeginning;
+exports.filter = filter;
