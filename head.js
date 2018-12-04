@@ -1,11 +1,16 @@
 const fs = require('fs');
 const {createDetailsOf,
   head} = require('./src/headLib.js');
+const {filterNumber,
+  filterOption, 
+  filterFilePaths} = require('./src/utilLib.js');
 
 const main = function(){
-  let filePaths = process.argv.slice(2);
+  let filePaths = filterFilePaths(process.argv);
   let fileDetails = createDetailsOf(fs.readFileSync, filePaths, "utf-8");
-  console.log(head("", fileDetails));
+  let option = filterOption(process.argv);  
+  let numericChoice = filterNumber(process.argv);
+  console.log(head(option, fileDetails, numericChoice));
 }
 
 main();
