@@ -1,11 +1,10 @@
-const read = function(file, reader, encoding) {
-  let content = reader(file, encoding);
-  return content;
+const read = function(reader, file, encoding) {
+  return reader(file, encoding);
 }
 
-const createDetailsOf = function(files, reader, encoding) {
+const createDetailsOf = function(reader, files, encoding) {
   return files.map((fileName) => {
-    let content = read(fileName, reader, encoding);
+    let content = read(reader, fileName, encoding);
     return {fileName, content};
   });
 }

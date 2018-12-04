@@ -17,11 +17,11 @@ let readEmptyFile = function(file, encoding) {
 describe("read", function() {
 
   it("should return the content of provided file", function() {
-      assert(read("../testFile", readHelloWorld, "utf8"), "helloWorld");
+      assert(read(readHelloWorld, "../testFile", "utf8"), "helloWorld");
     });
 
     it("should return an empty string when an empty file is provided", function() {
-      assert.deepEqual(read("../testFileEmpty", readEmptyFile, "utf8"), "");
+      assert.deepEqual(read(readEmptyFile, "../testFileEmpty", "utf8"), "");
     });
   });
 
@@ -29,7 +29,7 @@ describe("createDetailsOf", function() {
 
   it("should return an array of an object of file detail  when a file is provided", function() {
 
-    let actualOutput = createDetailsOf(["../testFile"], readHelloWorld, "utf8");
+    let actualOutput = createDetailsOf(readHelloWorld, ["../testFile"], "utf8");
     let expectedOutput = [{fileName : "../testFile", content: "helloWorld"}];
 
     assert.deepEqual(actualOutput, expectedOutput);
@@ -38,7 +38,7 @@ describe("createDetailsOf", function() {
   it("should return an array of same length as num of files provided", function() {
 
     let files = ["../testFile1", "../testFile2"];
-    let actualOutput = createDetailsOf(files, readHelloWorld, "utf8");
+    let actualOutput = createDetailsOf(readHelloWorld, files, "utf8");
     let expectedOutput = [{fileName : "../testFile1", content: "helloWorld"},
                           {fileName : "../testFile2", content : "helloWorld"}];
 
