@@ -20,11 +20,13 @@ const getCharFromBeginning = function(fileContent, bytesRequired) {
 }
 
 const filter = function(func, filesDetail, num) {
+  let delimiter = "";
   let lines = filesDetail.reduce((texts, file) =>{
     if(filesDetail.length >1){
-      let heading = "==> " + file.fileName + " <==";
+      let heading = delimiter + "==> " + file.fileName + " <==";
       texts.push(heading);
     }
+    delimiter = "\n";
     texts.push(func(file.content, num));
     return texts;
   }, []);
