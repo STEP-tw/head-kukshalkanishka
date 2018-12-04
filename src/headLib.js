@@ -1,5 +1,5 @@
 const read = function(reader, file, encoding) {
-  return reader(file, encoding);
+  return reader( file, encoding);
 }
 
 const createDetailsOf = function(reader, files, encoding) {
@@ -30,7 +30,7 @@ const filter = function(func, filesDetail, num) {
   return lines.join("\n"); 
 }
 
-const head = function(option, filesDetail, num) {
+const head = function(option, filesDetail, num = 10) {
   let func = getLinesFromTop;
   if(option == "c") {
     func = getCharFromBeginning;
