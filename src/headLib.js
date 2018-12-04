@@ -44,3 +44,4 @@ exports.getLinesFromTop = getLinesFromTop;
 exports.getCharFromBeginning = getCharFromBeginning;
 exports.filter = filter;
 exports.head = head;
+
