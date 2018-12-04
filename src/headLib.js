@@ -30,17 +30,17 @@ const filter = function(func, filesDetail, num) {
   return lines.join("\n"); 
 }
 
-//const head = function(filesDetail, option, num) {
-//  let func = getLinesFromTop;
-//  if(option == "c") {
-//    func = getCharFromBeginning;
-//  }
-//  return filter(func, filesDetail, num);
-//}
+const head = function(option, filesDetail, num) {
+  let func = getLinesFromTop;
+  if(option == "c") {
+    func = getCharFromBeginning;
+  }
+  return filter(func, filesDetail, num);
+}
 
 exports.read = read;
 exports.createDetailsOf = createDetailsOf;
 exports.getLinesFromTop = getLinesFromTop;
 exports.getCharFromBeginning = getCharFromBeginning;
 exports.filter = filter;
-//exports.head = head;
+exports.head = head;
