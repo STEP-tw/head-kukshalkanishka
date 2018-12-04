@@ -1,6 +1,6 @@
 const assert = require("assert");
 const {read,
-  fileDetail} = require("../src/headLib.js");
+  createDetailsOf} = require("../src/headLib.js");
 
 let readHelloWorld = (file, encoding) => "helloWorld";
 let readEmptyFile = (file, encoding) => "";
@@ -12,6 +12,16 @@ describe("read", function() {
   });
 
   it("should return an empty string when an empty file is provided", function() {
-    assert.deepEqual(read("../testFile", readEmptyFile, "utf8"), "");
+    assert.deepEqual(read("../testFileEmpty", readEmptyFile, "utf8"), "");
+  });
+});
+
+describe("createDetailsOf", function() {
+
+  it("should return an object with keys \"fileName\" and \"content\" when a file is provided", function() {
+    let actualOutput = createDetailsOf("../testFile", readHelloWorld, "utf8");
+    let expectedOutput = {fileName : "../testFile", content: "helloWorld"};
+
+    assert.deepEqual(actualOutput, expectedOutput);
   });
 });
