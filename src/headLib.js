@@ -19,15 +19,28 @@ const getCharFromBeginning = function(fileContent, bytesRequired) {
   return fileContent.slice(0, bytesRequired);
 }
 
-const filter = function(filesDetail, option, num) {
-  return filesDetail.reduce((texts, file) =>{
-    texts.push(option(file.content, num));
+const filter = function(func, filesDetail, num) {
+  let lines = filesDetail.reduce((texts, file) =>{
+    if(filesDetail.length >1){
+      texts.push(file.fileName);
+    }
+    texts.push(func(file.content, num));
     return texts;
   }, []);
+  return lines.join("\n"); 
 }
+
+//const head = function(filesDetail, option, num) {
+//  let func = getLinesFromTop;
+//  if(option == "c") {
+//    func = getCharFromBeginning;
+//  }
+//  return filter(func, filesDetail, num);
+//}
 
 exports.read = read;
 exports.createDetailsOf = createDetailsOf;
 exports.getLinesFromTop = getLinesFromTop;
 exports.getCharFromBeginning = getCharFromBeginning;
 exports.filter = filter;
+//exports.head = head;
