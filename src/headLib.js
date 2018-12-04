@@ -32,7 +32,7 @@ const filter = function(func, filesDetail, num) {
 
 const head = function(option, filesDetail, num = 10) {
   let func = getLinesFromTop;
-  if(option == "c") {
+  if(option == "-c") {
     func = getCharFromBeginning;
   }
   return filter(func, filesDetail, num);
@@ -44,4 +44,3 @@ exports.getLinesFromTop = getLinesFromTop;
 exports.getCharFromBeginning = getCharFromBeginning;
 exports.filter = filter;
 exports.head = head;
-
