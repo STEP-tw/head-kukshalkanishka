@@ -15,6 +15,11 @@ const getLinesFromTop = function(fileContent, numOfLines){
   return requiredLines.join("\n");
 }
 
+const getCharFromBeginning = function(fileContent, bytesRequired) {
+  return fileContent.slice(0, bytesRequired);
+}
+
 exports.read = read;
 exports.createDetailsOf = createDetailsOf;
 exports.getLinesFromTop = getLinesFromTop;
+exports.getCharFromBeginning = getCharFromBeginning;

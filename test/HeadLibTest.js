@@ -1,7 +1,8 @@
 const assert = require("assert");
 const {read,
   createDetailsOf,
-  getLinesFromTop} = require("../src/headLib.js");
+  getLinesFromTop,
+  getCharFromBeginning} = require("../src/headLib.js");
 
 let readHelloWorld = function(file, encoding) {
   if(file && encoding) {
@@ -53,15 +54,31 @@ describe("getLinesFromTop", function() {
                      "this is a line 3\n" +
                      "this is a line 4 \n";
 
-  it("should return an empty array when number of lines required is 0", function() {
+  it("should return an empty string when number of lines required is 0", function() {
     assert.deepEqual(getLinesFromTop(file1Content, 0), "");
   });
 
-  it("should return an array of length equal to the num of lines", function() {
+  it("should return a string of length equal to the num of lines", function() {
 
     let expectedOutput = "this is a line 1\n"+
                          "this is a line 2"; 
 
     assert.deepEqual(getLinesFromTop(file1Content, 2), expectedOutput);
+  });
+});
+
+describe("getCharFromBeginning", function() {
+  let file1Content = "this is a line 1\n" +
+                     "this is a line 2\n" +
+                     "this is a line 3\n" +
+                     "this is a line 4 \n";
+
+  it("should return an empty string when bytes required is 0", function() {
+    assert.deepEqual(getCharFromBeginning(file1Content, 0), "");
+  });
+
+  it("should return string of length equal to the bytes required", function() {
+
+    assert.deepEqual(getCharFromBeginning(file1Content, 2), "th");
   });
 });
