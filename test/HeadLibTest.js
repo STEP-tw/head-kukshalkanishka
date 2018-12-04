@@ -1,6 +1,7 @@
 const assert = require("assert");
 const {read,
-  createDetailsOf} = require("../src/headLib.js");
+  createDetailsOf,
+  filter} = require("../src/headLib.js");
 
 let readHelloWorld = function(file, encoding) {
   if(file && encoding) {
@@ -43,5 +44,24 @@ describe("createDetailsOf", function() {
                           {fileName : "../testFile2", content : "helloWorld"}];
 
     assert.deepEqual(actualOutput, expectedOutput);
+  });
+});
+
+describe("filter", function() {
+  let file1Content = "this is a line 1\n" +
+                     "this is a line 2\n" +
+                     "this is a line 3\n" +
+                     "this is a line 4 \n";
+
+  it("should return an empty array when number of lines required is 0", function() {
+    assert.deepEqual(filter(file1Content, "n", 0), []);
+  });
+
+  it("should return an array of length equal to the num of lines", function() {
+
+    let expectedOutput = ["this is a line 1" ,
+                         "this is a line 2"]; 
+
+    assert.deepEqual(filter(file1Content, "n", 2), expectedOutput);
   });
 });
