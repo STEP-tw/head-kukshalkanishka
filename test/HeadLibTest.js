@@ -29,8 +29,8 @@ describe("createDetailsOf", function() {
 
   it("should return an object with keys \"fileName\" and \"content\" when a file is provided", function() {
 
-    let actualOutput = createDetailsOf("../testFile", readHelloWorld, "utf8");
-    let expectedOutput = {fileName : "../testFile", content: "helloWorld"};
+    let actualOutput = createDetailsOf(["../testFile"], readHelloWorld, "utf8");
+    let expectedOutput = [{fileName : "../testFile", content: "helloWorld"}];
 
     assert.deepEqual(actualOutput, expectedOutput);
   });

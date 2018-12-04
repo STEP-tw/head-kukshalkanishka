@@ -3,9 +3,11 @@ const read = function(file, reader, encoding) {
   return content;
 }
 
-const createDetailsOf = function(fileName, reader, encoding) {
-  let content = read(fileName, reader, encoding);
-  return {fileName, content};
+const createDetailsOf = function(files, reader, encoding) {
+  return files.map((fileName) => {
+    let content = read(fileName, reader, encoding);
+    return {fileName, content};
+  });
 }
 
 exports.read = read;
