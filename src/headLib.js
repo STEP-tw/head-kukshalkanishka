@@ -22,7 +22,8 @@ const getCharFromBeginning = function(fileContent, bytesRequired) {
 const filter = function(func, filesDetail, num) {
   let lines = filesDetail.reduce((texts, file) =>{
     if(filesDetail.length >1){
-      texts.push(file.fileName);
+      let heading = "==> " + file.fileName + " <==";
+      texts.push(heading);
     }
     texts.push(func(file.content, num));
     return texts;
