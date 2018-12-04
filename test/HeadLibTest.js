@@ -27,10 +27,20 @@ describe("read", function() {
 
 describe("createDetailsOf", function() {
 
-  it("should return an object with keys \"fileName\" and \"content\" when a file is provided", function() {
+  it("should return an array of an object of file detail  when a file is provided", function() {
 
     let actualOutput = createDetailsOf(["../testFile"], readHelloWorld, "utf8");
     let expectedOutput = [{fileName : "../testFile", content: "helloWorld"}];
+
+    assert.deepEqual(actualOutput, expectedOutput);
+  });
+
+  it("should return an array of same length as num of files provided", function() {
+
+    let files = ["../testFile1", "../testFile2"];
+    let actualOutput = createDetailsOf(files, readHelloWorld, "utf8");
+    let expectedOutput = [{fileName : "../testFile1", content: "helloWorld"},
+                          {fileName : "../testFile2", content : "helloWorld"}];
 
     assert.deepEqual(actualOutput, expectedOutput);
   });
