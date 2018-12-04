@@ -6,14 +6,14 @@ const filterOption = function(userInput) {
 }
 
 const filterNumber = function(userInput) {
-  let numSearchDetail = userInput.join(" ").match(/[1-9]/);
+  let numSearchDetail = userInput.join(" ").match(/[0-9]/);
   if(numSearchDetail){
     return +numSearchDetail[0];
   }
 }
 
 const filterFilePaths = function(userInput) {
-  let matchedDetail = userInput.join(" ").match(/[1-9]/);
+  let matchedDetail = userInput.join(" ").match(/[0-9]/);
   if(matchedDetail) {
     numIndex = matchedDetail.index;
   return userInput.join(" ").slice(numIndex+2).split(" ");

@@ -1,6 +1,7 @@
 const assert = require("assert");
 const {filterOption, 
-  filterNumber} = require('../src/utilLib.js');
+  filterNumber,
+  filterFilePaths} = require('../src/utilLib.js');
 
 describe("filterOption", function() {
   it("should return a string of matched content", function() {
@@ -22,3 +23,8 @@ describe("filterOption", function() {
   });
 });
 
+describe("filterFilePaths", function() {
+  it("should return an array of a FileName after the number", function() {
+    assert.deepEqual(filterFilePaths(["node", "./head.js", "-n3", "file1"]), ["file1"]);
+  });
+});
