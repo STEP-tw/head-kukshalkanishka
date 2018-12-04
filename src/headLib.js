@@ -9,15 +9,12 @@ const createDetailsOf = function(reader, files, encoding) {
   });
 }
 
-const filter = function (fileContent, type, numOfLines){
-  lines = fileContent;
-  if(type == "n"){
-    lines = fileContent.split("\n");
-  }
+const getLinesFromTop = function(fileContent, numOfLines){
+  lines = fileContent.split("\n");
   requiredLines = lines.slice(0,numOfLines);
-  return requiredLines;
+  return requiredLines.join("\n");
 }
 
 exports.read = read;
 exports.createDetailsOf = createDetailsOf;
-exports.filter = filter;
+exports.getLinesFromTop = getLinesFromTop;
