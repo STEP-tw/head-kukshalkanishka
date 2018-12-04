@@ -1,5 +1,5 @@
-const read = function(stringRef, reader) {
-  let content = reader(stringRef, "utf8");
+const read = function(file, reader, encoding) {
+  let content = reader(file, encoding);
   return content;
 }
 
