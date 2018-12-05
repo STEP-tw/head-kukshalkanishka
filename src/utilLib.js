@@ -1,18 +1,26 @@
 const parseInput = function(userArgs) {
-  let option = "";
-  let numericOption = 10;
-  let filePaths = userArgs.slice(2);
+  let option = undefined;
+  let numericOption = undefined;
+  let index = 0;
 
-  let optionDetail = userArgs[2].match("-n|-c");
+  let optionDetail = userArgs[0].match("-n|-c");
   if(optionDetail){
     option = optionDetail[0];
-    numericOption = +userArgs[2].substr(2); 
-    filePaths = userArgs.slice(3);
+    numericOption = +userArgs[0].substr(2);
+    index = 1;
+    if(numericOption == "") {
+      index = 2
+      numericOption = userArgs[1];
+    }
   }
-  if(numericOption == ''){
-    numericOption = userArgs[3];
-    filePaths = userArgs.slice(4);
+
+  let num = userArgs[0].match(/^-[0-9]/);
+  if(num) {
+    numericOption = userArgs[0].slice(1);
+    index = 1;
   }
+
+  filePaths = userArgs.slice(index);
   return {option, numericOption, filePaths};
 }
 

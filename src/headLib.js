@@ -1,3 +1,5 @@
+const {parseInput} = require('./utilLib.js');
+
 const read = function(reader, file, encoding) {
   return reader( file, encoding);
 }
@@ -36,7 +38,7 @@ const filter = function(func, filesDetail, num) {
   return lines.join("\n"); 
 }
 
-const head = function(filesDetail, {option, numericOption}) {
+const head = function(filesDetail, {option, numericOption = 10}) {
   let func = getLinesFromTop;
   if(option == "-c") {
     func = getCharFromBeginning;
