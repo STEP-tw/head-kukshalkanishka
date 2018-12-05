@@ -19,12 +19,15 @@ const getCharFromBeginning = function(fileContent, bytesRequired) {
   return fileContent.slice(0, bytesRequired);
 }
 
+const createHeading = function(file, delimiter) {
+  return delimiter + "==> " + file.fileName + " <==";
+}
+
 const filter = function(func, filesDetail, num) {
   let delimiter = "";
   let lines = filesDetail.reduce((texts, file) =>{
     if(filesDetail.length >1){
-      let heading = delimiter + "==> " + file.fileName + " <==";
-      texts.push(heading);
+      texts.push(createHeading(file, delimiter));
     }
     delimiter = "\n";
     texts.push(func(file.content, num));

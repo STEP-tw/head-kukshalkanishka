@@ -1,5 +1,5 @@
 const filterOption = function(userInput) {
-  let optionDetail = userInput.join(" ").match("-c|-n");
+  let optionDetail = userInput.join(" ").match(/^(-c|-n)/);
   if(optionDetail){
     return optionDetail[0];
   }
