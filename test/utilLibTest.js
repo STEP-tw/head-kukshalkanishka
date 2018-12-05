@@ -5,21 +5,21 @@ const {filterOption,
 
 describe("filterOption", function() {
   it("should return a string of matched content", function() {
-    assert.deepEqual(filterOption(["-c", "hello"]), "-c");
+    assert.deepEqual(filterOption(["node", "hello", "-c"]), "-c");
   });
 
   it("should return undefined when no option is present in string", function() {
-    assert.deepEqual(filterOption(["", "hello"]), undefined);
+    assert.deepEqual(filterOption(["", "hello","4"]), undefined);
   });
 });
 
-describe("filterOption", function() {
+describe("filterNumber", function() {
   it("should return a matched number", function() {
     assert.deepEqual(filterNumber(["3", "hello"]), 3);
   });
 
   it("should return undefined when no number is present in string", function() {
-    assert.deepEqual(filterOption(["", "hello"]), undefined);
+    assert.deepEqual(filterNumber(["", "hello"]), undefined);
   });
 });
 
