@@ -1,12 +1,12 @@
 const fs = require('fs');
 const {head, createDetailsOf} = require('./src/headLib.js');
 const {parseInput} = require('./src/utilLib.js');
-const {test} = require('./src/errorHandling.js');
+const {validate} = require('./src/errorHandling.js');
 
 const main = function(){
   let parsedInput = parseInput(process.argv.slice(2));
-  if(test(parsedInput)){
-    return test(parsedInput);
+  if(validate(parsedInput)){
+    return validate(parsedInput);
   }
   let fileDetails = createDetailsOf(fs.readFileSync, parsedInput.filePaths, "utf-8");
   return head(fileDetails, parsedInput);
