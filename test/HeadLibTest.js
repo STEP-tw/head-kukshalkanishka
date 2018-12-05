@@ -140,5 +140,3 @@ describe("head", function() {
     assert.deepEqual(head([{fileName : "file1" , content : file1Content}], {numericOption: 2, option:"-c"}), "th");
   });
 });
-
-

@@ -1,4 +1,5 @@
 const {parseInput} = require('./utilLib.js');
+const {validate} = require('./errorHandling.js');
 
 const read = function(reader, file, encoding) {
   return reader( file, encoding);
@@ -46,9 +47,19 @@ const head = function(filesDetail, {option, numericOption = 10}) {
   return filter(func, filesDetail, numericOption);
 }
 
+const runHead = function(reader, encoding, userArgs) {
+  let parsedInput = parseInput(userArgs);
+  if(validate(parsedInput)){
+    return validate(parsedInput);
+  }
+  let fileDetails = createDetailsOf(reader, parsedInput.filePaths, encoding);
+  return head(fileDetails, parsedInput);
+}
+
 exports.read = read;
 exports.createDetailsOf = createDetailsOf;
 exports.getLinesFromTop = getLinesFromTop;
 exports.getCharFromBeginning = getCharFromBeginning;
 exports.filter = filter;
 exports.head = head;
+exports.runHead = runHead;
