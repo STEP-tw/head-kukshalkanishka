@@ -1,7 +1,7 @@
-const test = function(inputs) {
-  if(inputs.numericOption === 0){
-    return "head: illegal line count -- 0";
+const validate = function(inputs) {
+  if(inputs.numericOption <= 0){
+    return "head: illegal line count -- " + inputs.numericOption;
   }
 }
 
-exports.test = test;
+exports.validate = validate;
