@@ -1,26 +1,35 @@
-const filterOption = function(userInput) {
-  optionDetail = userInput[2].match("-n|-c");
+const parseInput = function(userArgs) {
+  let option = "";
+  let numericOption = 10;
+  let filePaths = userArgs.slice(2);
+
+  let optionDetail = userArgs[2].match("-n|-c");
   if(optionDetail){
-    return optionDetail[0];
+    option = optionDetail[0];
+    numericOption = +userArgs[2].substr(2); 
+    filePaths = userArgs.slice(3);
   }
+  if(numericOption == ''){
+    numericOption = userArgs[3];
+    filePaths = userArgs.slice(4);
+  }
+  return {option, numericOption, filePaths};
 }
 
-const filterNumber = function(userInput) {
-  let numSearchDetail = userInput.join(" ").match(/[0-9]/);
-  if(numSearchDetail){
-    return +numSearchDetail[0];
-  }
-}
+/* 
+  Usage:
+  node ./head.js file1
+  node ./head.js -n5 file1
+  node ./head.js -n 5 file1
+  node ./head.js -5 file1
+  node ./head.js file1 file2
+  node ./head.js -n 5 file1 file2
+  node ./head.js -n5 file1 file2
+  node ./head.js -5 file1 file2 
+  node ./head.js -c5 file1
+  node ./head.js -c 5 file1
+  node ./head.js -c5 file1 file2
+  node ./head.js -c 5 file1 file2
+*/
 
-const filterFilePaths = function(userInput) {
-  let matchedDetail = userInput.join(" ").match(/[0-9]/);
-  if(matchedDetail) {
-    numIndex = matchedDetail.index;
-  return userInput.join(" ").slice(numIndex+2).split(" ");
-  }
-  return userInput.slice(2);
-}
-
-exports.filterNumber = filterNumber;
-exports.filterOption = filterOption;
-exports.filterFilePaths = filterFilePaths;
+exports.parseInput = parseInput;

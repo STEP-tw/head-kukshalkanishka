@@ -36,12 +36,12 @@ const filter = function(func, filesDetail, num) {
   return lines.join("\n"); 
 }
 
-const head = function(option, filesDetail, num = 10) {
+const head = function(filesDetail, {option, numericOption}) {
   let func = getLinesFromTop;
   if(option == "-c") {
     func = getCharFromBeginning;
   }
-  return filter(func, filesDetail, num);
+  return filter(func, filesDetail, numericOption);
 }
 
 exports.read = read;

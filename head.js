@@ -1,16 +1,12 @@
 const fs = require('fs');
 const {createDetailsOf,
   head} = require('./src/headLib.js');
-const {filterNumber,
-  filterOption, 
-  filterFilePaths} = require('./src/utilLib.js');
+const {parseInput} = require('./src/utilLib.js');
 
 const main = function(){
-  let filePaths = filterFilePaths(process.argv);
-  let fileDetails = createDetailsOf(fs.readFileSync, filePaths, "utf-8");
-  let option = filterOption(process.argv);  
-  let numericChoice = filterNumber(process.argv);
-  console.log(head(option, fileDetails, numericChoice));
+  let parsedInput = parseInput(process.argv);
+  let fileDetails = createDetailsOf(fs.readFileSync, parsedInput.filePaths, "utf-8");
+  console.log(head(fileDetails, parsedInput));
 }
 
 main();

@@ -119,23 +119,25 @@ describe("head", function() {
                      "this is a line 4 \n";
 
   it("should return an empty string when number of lines required is 0 ", function() {
-    assert.deepEqual(head("", [{fileName : "file1" , content : file1Content}], 0), "");
+    assert.deepEqual(head([{fileName : "file1" , content : file1Content}], {numericOption: 0, option:"-n"}), "");
   });
 
   it("should return a string with num of lines equal to the required num of lines", function() {
 
+    let actualOutput = head([{fileName : "file1" , content : file1Content}], 
+                       {numericOption: 2, option:"-n"});
     let expectedOutput = "this is a line 1\n"+
                          "this is a line 2";
 
-    assert.deepEqual(head("", [{fileName : "file1" , content : file1Content}], 2), expectedOutput);
+    assert.deepEqual(actualOutput, expectedOutput);
   });
 
   it("should return an empty string when number of char required is 0", function() {
-    assert.deepEqual(head("-c", [{fileName : "file1" , content : file1Content}], 0), "");
+    assert.deepEqual(head([{fileName : "file1" , content : file1Content}], {numericOption: 0, option:"-c"}), "");
   });
 
   it("should return string of length equal to the num of char required", function() {
-    assert.deepEqual(head("-c", [{fileName : "file1" , content : file1Content}], 2), "th");
+    assert.deepEqual(head([{fileName : "file1" , content : file1Content}], {numericOption: 2, option:"-c"}), "th");
   });
 });
 
