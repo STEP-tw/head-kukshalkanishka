@@ -3,7 +3,7 @@ const parseInput = function(userArgs) {
   let numericOption = undefined;
   let index = 0;
 
-  let optionDetail = userArgs[0].match("-n|-c");
+  let optionDetail = userArgs[0].match("-[a-z]");
   if(optionDetail){
     option = optionDetail[0];
     numericOption = userArgs[0].substr(2);
