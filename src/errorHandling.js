@@ -1,5 +1,5 @@
 const validate = function(inputs) {
-  if(inputs.numericOption <= 0){
+  if(inputs.numericOption <= 0 || !isFinite(inputs.numericOption)){
     return "head: illegal line count -- " + inputs.numericOption;
   }
 }

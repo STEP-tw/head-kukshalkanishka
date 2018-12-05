@@ -10,13 +10,13 @@ const parseInput = function(userArgs) {
     index = 1;
     if(numericOption === "") {
       index = 2
-      numericOption = +userArgs[1];
+      numericOption = userArgs[1];
     }
   }
 
   let num = userArgs[0].match(/^-[0-9]/);
   if(num) {
-    numericOption = +userArgs[0].slice(1);
+    numericOption = userArgs[0].slice(1);
     index = 1;
   }
 
