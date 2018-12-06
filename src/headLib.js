@@ -27,11 +27,12 @@ const createHeading = function(file, delimiter) {
 }
 
 const filter = function(func, filesDetail, num) {
+  if(filesDetail.length ==1) {
+    return func(filesDetail[0].content, num);
+  }
   let delimiter = "";
   let lines = filesDetail.reduce((texts, file) =>{
-    if(filesDetail.length >1){
-      texts.push(createHeading(file, delimiter));
-    }
+    texts.push(createHeading(file, delimiter));
     delimiter = "\n";
     texts.push(func(file.content, num));
     return texts;

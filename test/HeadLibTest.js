@@ -4,7 +4,8 @@ const {read,
   getLinesFromTop,
   getCharFromBeginning,
   filter,
-  head} = require("../src/headLib.js");
+  head,
+  runHead} = require("../src/headLib.js");
 
 let readHelloWorld = function(file, encoding) {
   if(file && encoding) {
@@ -140,3 +141,64 @@ describe("head", function() {
     assert.deepEqual(head([{fileName : "file1" , content : file1Content}], {numericOption: 2, option:"-c"}), "th");
   });
 });
+
+describe("runHead", function() {
+  describe("error handling", function() {
+    it("should provide error message when negative line count is given", function() {
+      let actualOutput = runHead(readHelloWorld, "utf-8", ["-n", "-12", "file1"]);
+      let expectedOutput = "head: illegal line count -- -12"
+
+      assert.deepEqual(actualOutput, expectedOutput);
+    });
+
+    it("should provide error message when negative byte count is given", function() {
+      let actualOutput = runHead(readHelloWorld, "utf-8", ["-c", "-12", "file1"]);
+      let expectedOutput = "head: illegal byte count -- -12"
+
+      assert.deepEqual(actualOutput, expectedOutput);
+    });
+    
+    it("should provide error message when invalid option is given", function() {
+      let actualOutput = runHead(readHelloWorld, "utf-8", ["-v", "-12", "file1"]);
+      let expectedOutput = "head: illegal option -- v\n" +
+                           "usage: head [-n lines | -c bytes] [file ...]";
+      assert.deepEqual(actualOutput, expectedOutput);
+    });
+
+    it("should provide error message when invalid option is given", function() {
+      let actualOutput = runHead(readHelloWorld, "utf-8", ["-v", "-12", "file1"]);
+      let expectedOutput = "head: illegal option -- v\n" +
+                           "usage: head [-n lines | -c bytes] [file ...]";
+      assert.deepEqual(actualOutput, expectedOutput);
+    });
+
+     it("should provide error message when invalid line count is 0", function() {
+      let actualOutput = runHead(readHelloWorld, "utf-8", ["-n", "0", "file1"]);
+      let expectedOutput = "head: illegal line count -- 0";
+
+         assert.deepEqual(actualOutput, expectedOutput);
+    });
+
+    it("should provide error message when invalid line count is 0", function() {
+      let actualOutput = runHead(readHelloWorld, "utf-8", ["-c", "0", "file1"]);
+      let expectedOutput = "head: illegal byte count -- 0";
+
+      assert.deepEqual(actualOutput, expectedOutput);
+    });
+
+    it("should provide error message when invalid byte count is a alphabet", function() {
+      let actualOutput = runHead(readHelloWorld, "utf-8", ["-c", "xy", "file1"]);
+      let expectedOutput = "head: illegal byte count -- xy";
+
+      assert.deepEqual(actualOutput, expectedOutput);
+    });
+
+    it("should provide error message when invalid line count is a alphabet", function() {
+      let actualOutput = runHead(readHelloWorld, "utf-8", ["-n", "xy", "file1"]);
+      let expectedOutput = "head: illegal line count -- xy";
+
+      assert.deepEqual(actualOutput, expectedOutput);
+    });
+  });
+});
+
