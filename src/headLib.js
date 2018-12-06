@@ -7,11 +7,11 @@ const read = function(reader, file, encoding) {
 
 const createDetailsOf = function(reader, files, encoding, validater) {
   return files.map((fileName) => {
+    let content = null;
     if(validater(fileName)) {
-      content = read(reader, fileName, encoding);
-    return {fileName, content};
+    content = read(reader, fileName, encoding);
     }
-    return {fileName};
+    return {fileName, content};
   });
 }
 
@@ -29,10 +29,10 @@ const createHeading = function(file, delimiter) {
   return delimiter + "==> " + file.fileName + " <==";
 }
 
-const filter = function(func, filesDetail, num, validater) {
+const filter = function(func, filesDetail, num) {
   let delimiter = "";
   let lines = filesDetail.reduce((texts, file) =>{
-    if(!validater(file.fileName)) {
+    if(file.content == null) {
       texts.push("head: "+file.fileName+": No such file or directory");
       return texts;
     }
@@ -46,12 +46,12 @@ const filter = function(func, filesDetail, num, validater) {
   return lines.join("\n"); 
 }
 
-const head = function(filesDetail, {option, numericOption = 10}, validater) {
+const head = function(filesDetail, {option, numericOption = 10}) {
   let func = getLinesFromTop;
   if(option == "-c") {
     func = getCharFromBeginning;
   }
-  return filter(func, filesDetail, numericOption, validater);
+  return filter(func, filesDetail, numericOption);
 }
 
 const runHead = function(reader, encoding, userArgs, validater) {
@@ -60,7 +60,7 @@ const runHead = function(reader, encoding, userArgs, validater) {
     return validate(parsedInput);
   }
   let fileDetails = createDetailsOf(reader, parsedInput.filePaths, encoding, validater);
-  return head(fileDetails, parsedInput, validater);
+  return head(fileDetails, parsedInput);
 }
 
 exports.read = read;

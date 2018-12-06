@@ -99,14 +99,14 @@ describe("filter", function() {
                      "this is a line 4 \n";
 
   it("should return an empty string when number of lines required is 0 ", function() {
-    let actualOut = filter(getLinesFromTop, [{fileName : "file1" , content : file1Content}], 0, validater);
+    let actualOut = filter(getLinesFromTop, [{fileName : "file1" , content : file1Content}], 0);
 
     assert.deepEqual(actualOut, "");
   });
 
   it("should return a string with num of lines equal to the required num of lines", function() {
 
-    let actualOut = filter(getLinesFromTop, [{fileName : "file1" , content : file1Content}], 2, validater);
+    let actualOut = filter(getLinesFromTop, [{fileName : "file1" , content : file1Content}], 2);
     let expectedOutput = "this is a line 1\n"+
                          "this is a line 2";
 
@@ -115,13 +115,13 @@ describe("filter", function() {
   });
 
   it("should return an empty string when number of char required is 0", function() {
-    let actualOut = filter(getCharFromBeginning, [{fileName : "file1" , content : file1Content}], 0, validater);
+    let actualOut = filter(getCharFromBeginning, [{fileName : "file1" , content : file1Content}], 0);
 
     assert.deepEqual(actualOut, "");
   });
 
   it("should return string of length equal to the num of char required", function() {
-    let actualOut = filter(getCharFromBeginning, [{fileName : "file1" , content : file1Content}], 2, validater);
+    let actualOut = filter(getCharFromBeginning, [{fileName : "file1" , content : file1Content}], 2);
 
     assert.deepEqual(actualOut, "th");
   });
@@ -134,7 +134,7 @@ describe("head", function() {
                      "this is a line 4 \n";
 
   it("should return an empty string when number of lines required is 0 ", function() {
-    let actual = head([{fileName : "file1" , content : file1Content}], {numericOption: 0, option:"-n"}, validater);
+    let actual = head([{fileName : "file1" , content : file1Content}], {numericOption: 0, option:"-n"});
     assert.deepEqual(actual, "");
   });
 
@@ -149,12 +149,12 @@ describe("head", function() {
   });
 
   it("should return an empty string when number of char required is 0", function() {
-    let actual = head([{fileName : "file1" , content : file1Content}], {numericOption: 0, option:"-c"},validater);
+    let actual = head([{fileName : "file1" , content : file1Content}], {numericOption: 0, option:"-c"});
     assert.deepEqual(actual, "");
   });
 
   it("should return string of length equal to the num of char required", function() {
-    let actual = head([{fileName : "file1" , content : file1Content}], {numericOption: 2, option:"-c"},validater);
+    let actual = head([{fileName : "file1" , content : file1Content}], {numericOption: 2, option:"-c"});
     assert.deepEqual(actual, "th");
   });
 });
