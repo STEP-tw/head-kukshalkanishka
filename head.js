@@ -2,8 +2,11 @@ const fs = require('fs');
 const {runHead} = require('./src/headLib.js');
 
 const main = function(){
-
-  console.log(runHead(fs.readFileSync, "utf-8", process.argv.slice(2)));
+  let reader = fs.readFileSync; 
+  let encoding = "utf-8";
+  let userArgs = process.argv.slice(2);
+  let validater = fs.existsSync;
+  console.log(runHead(reader, encoding, userArgs, validater)); 
 }
 
 main();

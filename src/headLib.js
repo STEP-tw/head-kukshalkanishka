@@ -5,10 +5,13 @@ const read = function(reader, file, encoding) {
   return reader( file, encoding);
 }
 
-const createDetailsOf = function(reader, files, encoding) {
+const createDetailsOf = function(reader, files, encoding, validater) {
   return files.map((fileName) => {
-    let content = read(reader, fileName, encoding);
+    if(validater(fileName)) {
+      content = read(reader, fileName, encoding);
     return {fileName, content};
+    }
+    return {fileName};
   });
 }
 
@@ -26,13 +29,15 @@ const createHeading = function(file, delimiter) {
   return delimiter + "==> " + file.fileName + " <==";
 }
 
-const filter = function(func, filesDetail, num) {
-  if(filesDetail.length ==1) {
-    return func(filesDetail[0].content, num);
-  }
+const filter = function(func, filesDetail, num, validater) {
   let delimiter = "";
   let lines = filesDetail.reduce((texts, file) =>{
-    texts.push(createHeading(file, delimiter));
+    if(!validater(file.fileName)) {
+      return ["head: "+file.fileName+": No such file or directory"];
+    }
+    if(filesDetail.length > 1) {
+      texts.push(createHeading(file, delimiter));
+    }
     delimiter = "\n";
     texts.push(func(file.content, num));
     return texts;
@@ -40,21 +45,21 @@ const filter = function(func, filesDetail, num) {
   return lines.join("\n"); 
 }
 
-const head = function(filesDetail, {option, numericOption = 10}) {
+const head = function(filesDetail, {option, numericOption = 10}, validater) {
   let func = getLinesFromTop;
   if(option == "-c") {
     func = getCharFromBeginning;
   }
-  return filter(func, filesDetail, numericOption);
+  return filter(func, filesDetail, numericOption, validater);
 }
 
-const runHead = function(reader, encoding, userArgs) {
+const runHead = function(reader, encoding, userArgs, validater) {
   let parsedInput = parseInput(userArgs);
   if(validate(parsedInput)){
     return validate(parsedInput);
   }
-  let fileDetails = createDetailsOf(reader, parsedInput.filePaths, encoding);
-  return head(fileDetails, parsedInput);
+  let fileDetails = createDetailsOf(reader, parsedInput.filePaths, encoding, validater);
+  return head(fileDetails, parsedInput, validater);
 }
 
 exports.read = read;

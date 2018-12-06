@@ -1,4 +1,5 @@
 const validate = function(input, validater) {
+
   let choices = {"-n" : "line", "-c" : "byte"};
   if(input.option != undefined && input.option != "-n" && input.option != "-c"){
     return "head: illegal option -- " +
