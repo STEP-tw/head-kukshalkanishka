@@ -3,9 +3,9 @@ const {read,
   createDetailsOf,
   getLinesFromTop,
   getCharFromBeginning,
-  filter,
   head,
-  runHead} = require("../src/headLib.js");
+  runHead,
+  selector} = require("../src/headLib.js");
 
 let readHelloWorld = function(file, encoding) {
   if(file && encoding) {
@@ -89,41 +89,6 @@ describe("getCharFromBeginning", function() {
   it("should return string of length equal to the bytes required", function() {
 
     assert.deepEqual(getCharFromBeginning(file1Content, 2), "th");
-  });
-});
-
-describe("filter", function() {
-  let file1Content = "this is a line 1\n" +
-                     "this is a line 2\n" +
-                     "this is a line 3\n" +
-                     "this is a line 4 \n";
-
-  it("should return an empty string when number of lines required is 0 ", function() {
-    let actualOut = filter(getLinesFromTop, [{fileName : "file1" , content : file1Content}], 0);
-
-    assert.deepEqual(actualOut, "");
-  });
-
-  it("should return a string with num of lines equal to the required num of lines", function() {
-
-    let actualOut = filter(getLinesFromTop, [{fileName : "file1" , content : file1Content}], 2);
-    let expectedOutput = "this is a line 1\n"+
-                         "this is a line 2";
-
-
-    assert.deepEqual(actualOut, expectedOutput);
-  });
-
-  it("should return an empty string when number of char required is 0", function() {
-    let actualOut = filter(getCharFromBeginning, [{fileName : "file1" , content : file1Content}], 0);
-
-    assert.deepEqual(actualOut, "");
-  });
-
-  it("should return string of length equal to the num of char required", function() {
-    let actualOut = filter(getCharFromBeginning, [{fileName : "file1" , content : file1Content}], 2);
-
-    assert.deepEqual(actualOut, "th");
   });
 });
 
@@ -216,5 +181,15 @@ describe("runHead", function() {
 
       assert.deepEqual(actualOutput, expectedOutput);
     });
+  });
+});
+
+describe("selector", function() {
+  it("should return getLinesFromTop function when -n is given in option ", function() {
+    assert.deepEqual(selector("-n"), getLinesFromTop);
+  });
+
+  it("should return getCharFromBeginning function when -c is given in option ", function() {
+    assert.deepEqual(selector("-c"), getCharFromBeginning);
   });
 });
