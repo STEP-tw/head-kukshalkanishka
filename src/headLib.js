@@ -39,7 +39,7 @@ const selector = function(option) {
 
 const head = function(fileDetails, {option, numericOption = 10}) {
   let delimiter = "";
-  let func = selector(option);
+  let fetcher = selector(option);
   let lines = fileDetails.reduce((texts, file) =>{
     if(file.content == null) {
       texts.push("selector: "+file.fileName+": No such file or directory");
@@ -49,7 +49,7 @@ const head = function(fileDetails, {option, numericOption = 10}) {
       texts.push(createHeading(file, delimiter));
     }
     delimiter = "\n";
-    texts.push(func(file.content, numericOption));
+    texts.push(fetcher(file.content, numericOption));
     return texts;
   }, []);
   return lines.join("\n"); 
