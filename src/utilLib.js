@@ -11,8 +11,8 @@ const getOption = function(optionDetail, userArgs){
 }
 
 const parseInput = function(userArgs) {
-  let option = undefined;
-  let count = undefined;
+  let option;
+  let count;
   let index = 0;
 
   let optionDetail = userArgs[0].match("-[a-z]");

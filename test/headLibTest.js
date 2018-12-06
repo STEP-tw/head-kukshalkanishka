@@ -28,13 +28,13 @@ let validater = function(file) {
 describe("read", function() {
 
   it("should return the content of provided file", function() {
-    assert.deepEqual(read(readHelloWorld, "../testFile", "utf8"), "helloWorld");
-  });
+      assert.deepEqual(read(readHelloWorld, "../testFile", "utf8"), "helloWorld");
+    });
 
-  it("should return an empty string when an empty file is provided", function() {
-    assert.deepEqual(read(readEmptyFile, "../testFileEmpty", "utf8"), "");
+    it("should return an empty string when an empty file is provided", function() {
+      assert.deepEqual(read(readEmptyFile, "../testFileEmpty", "utf8"), "");
+    });
   });
-});
 
 describe("createDetailsOf", function() {
 
@@ -51,7 +51,7 @@ describe("createDetailsOf", function() {
     let files = ["../testFile1", "../testFile2"];
     let actualOutput = createDetailsOf(readHelloWorld, files, "utf8", validater);
     let expectedOutput = [{fileName : "../testFile1", content: "helloWorld"},
-      {fileName : "../testFile2", content : "helloWorld"}];
+                          {fileName : "../testFile2", content : "helloWorld"}];
 
     assert.deepEqual(actualOutput, expectedOutput);
   });
@@ -59,9 +59,9 @@ describe("createDetailsOf", function() {
 
 describe("getLinesFromTop", function() {
   let file1Content = "this is a line 1\n" +
-    "this is a line 2\n" +
-    "this is a line 3\n" +
-    "this is a line 4 \n";
+                     "this is a line 2\n" +
+                     "this is a line 3\n" +
+                     "this is a line 4 \n";
 
   it("should return an empty string when number of lines required is 0", function() {
     assert.deepEqual(getLinesFromTop(file1Content, 0), "");
@@ -70,7 +70,7 @@ describe("getLinesFromTop", function() {
   it("should return a string of length equal to the num of lines", function() {
 
     let expectedOutput = "this is a line 1\n"+
-      "this is a line 2"; 
+                         "this is a line 2"; 
 
     assert.deepEqual(getLinesFromTop(file1Content, 2), expectedOutput);
   });
@@ -78,9 +78,9 @@ describe("getLinesFromTop", function() {
 
 describe("getCharFromBeginning", function() {
   let file1Content = "this is a line 1\n" +
-    "this is a line 2\n" +
-    "this is a line 3\n" +
-    "this is a line 4 \n";
+                     "this is a line 2\n" +
+                     "this is a line 3\n" +
+                     "this is a line 4 \n";
 
   it("should return an empty string when bytes required is 0", function() {
     assert.deepEqual(getCharFromBeginning(file1Content, 0), "");
@@ -94,32 +94,32 @@ describe("getCharFromBeginning", function() {
 
 describe("head", function() {
   let file1Content = "this is a line 1\n" +
-    "this is a line 2\n" +
-    "this is a line 3\n" +
-    "this is a line 4 \n";
+                     "this is a line 2\n" +
+                     "this is a line 3\n" +
+                     "this is a line 4 \n";
 
   it("should return an empty string when number of lines required is 0 ", function() {
-    let actual = head([{fileName : "file1" , content : file1Content}], {numericOption: 0, option:"-n"});
+    let actual = head([{fileName : "file1" , content : file1Content}], {count: 0, option:"-n"});
     assert.deepEqual(actual, "");
   });
 
   it("should return a string with num of lines equal to the required num of lines", function() {
 
     let actualOutput = head([{fileName : "file1" , content : file1Content}], 
-      {numericOption: 2, option:"-n"}, validater);
+                       {count: 2, option:"-n"}, validater);
     let expectedOutput = "this is a line 1\n"+
-      "this is a line 2";
+                         "this is a line 2";
 
     assert.deepEqual(actualOutput, expectedOutput);
   });
 
   it("should return an empty string when number of char required is 0", function() {
-    let actual = head([{fileName : "file1" , content : file1Content}], {numericOption: 0, option:"-c"});
+    let actual = head([{fileName : "file1" , content : file1Content}], {count: 0, option:"-c"});
     assert.deepEqual(actual, "");
   });
 
   it("should return string of length equal to the num of char required", function() {
-    let actual = head([{fileName : "file1" , content : file1Content}], {numericOption: 2, option:"-c"});
+    let actual = head([{fileName : "file1" , content : file1Content}], {count: 2, option:"-c"});
     assert.deepEqual(actual, "th");
   });
 });
@@ -139,26 +139,26 @@ describe("runHead", function() {
 
       assert.deepEqual(actualOutput, expectedOutput);
     });
-
+    
     it("should provide error message when invalid option is given", function() {
       let actualOutput = runHead(readHelloWorld, "utf-8", ["-v", "-12", "file1"], validater);
       let expectedOutput = "head: illegal option -- v\n" +
-        "usage: head [-n lines | -c bytes] [file ...]";
+                           "usage: head [-n lines | -c bytes] [file ...]";
       assert.deepEqual(actualOutput, expectedOutput);
     });
 
     it("should provide error message when invalid option is given", function() {
       let actualOutput = runHead(readHelloWorld, "utf-8", ["-v", "-12", "file1"], validater);
       let expectedOutput = "head: illegal option -- v\n" +
-        "usage: head [-n lines | -c bytes] [file ...]";
+                           "usage: head [-n lines | -c bytes] [file ...]";
       assert.deepEqual(actualOutput, expectedOutput);
     });
 
-    it("should provide error message when invalid line count is 0", function() {
+     it("should provide error message when invalid line count is 0", function() {
       let actualOutput = runHead(readHelloWorld, "utf-8", ["-n", "0", "file1"], validater);
       let expectedOutput = "head: illegal line count -- 0";
 
-      assert.deepEqual(actualOutput, expectedOutput);
+         assert.deepEqual(actualOutput, expectedOutput);
     });
 
     it("should provide error message when invalid line count is 0", function() {
@@ -199,7 +199,7 @@ describe("runHead", function() {
       }
     }
 
-    it.only("should return a string with num of lines equal to the required num of lines", function() {
+    it("should return a string with num of lines equal to the required num of lines", function() {
       let actual = runHead(readFile1Content, "utf-8", ["-n", "1", "file1"], validater);
 
       assert.deepEqual(actual, "this is a line 1"); 

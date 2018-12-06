@@ -2,7 +2,7 @@ const {parseInput} = require('./utilLib.js');
 const {validate} = require('./errorHandling.js');
 
 const read = function(reader, file, encoding) {
-  return reader(file, encoding);
+  return reader( file, encoding);
 }
 
 const createDetailsOf = function(reader, files, encoding, validater) {
