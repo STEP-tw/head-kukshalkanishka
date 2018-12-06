@@ -33,7 +33,8 @@ const filter = function(func, filesDetail, num, validater) {
   let delimiter = "";
   let lines = filesDetail.reduce((texts, file) =>{
     if(!validater(file.fileName)) {
-      return ["head: "+file.fileName+": No such file or directory"];
+      texts.push("head: "+file.fileName+": No such file or directory");
+      return texts;
     }
     if(filesDetail.length > 1) {
       texts.push(createHeading(file, delimiter));
