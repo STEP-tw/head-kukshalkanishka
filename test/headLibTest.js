@@ -122,6 +122,12 @@ describe("head", function() {
     let actual = head([{fileName : "file1" , content : file1Content}], {count: 2, option:"-c"});
     assert.deepEqual(actual, "th");
   });
+
+  it("should return an empty string when number of lines required is 0 ", function() {
+    let actual = head([{fileName : "file1" , content : null}], {count: 0, option:"-n"});
+    assert.deepEqual(actual, 'selector: file1: No such file or directory');
+  });
+
 });
 
 describe("runHead", function() {
