@@ -125,7 +125,14 @@ describe("head", function() {
 
   it("should return an empty string when number of lines required is 0 ", function() {
     let actual = head([{fileName : "file1" , content : null}], {count: 0, option:"-n"});
-    assert.deepEqual(actual, 'selector: file1: No such file or directory');
+    assert.deepEqual(actual, 'head: file1: No such file or directory');
+  });
+
+  it("should return string of length equal to the num of char required", function() {
+    let actual = head([{fileName : "file1" , content : file1Content},
+                       {fileName : "file2" , content : file1Content}],
+                       {count: 2, option:"-c"});
+    assert.deepEqual(actual, "==> file1 <==\nth\n\n==> file2 <==\nth");
   });
 
 });

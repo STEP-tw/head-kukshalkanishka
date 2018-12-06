@@ -42,7 +42,7 @@ const head = function(fileDetails, { option, count = 10 }) {
   let fetcher = selector(option);
   let lines = fileDetails.reduce((texts, file) => {
     if (file.content == null) {
-      texts.push('selector: ' + file.fileName + ': No such file or directory');
+      texts.push('head: ' + file.fileName + ': No such file or directory');
       return texts;
     }
     if (fileDetails.length > 1) {
