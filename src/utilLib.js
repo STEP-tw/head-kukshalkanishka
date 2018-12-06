@@ -1,27 +1,32 @@
+const getOption = function(optionDetail, userArgs){
+  option = optionDetail[0];
+  count = userArgs[0].substr(2);
+  index = 1;
+  if(count === "") {
+    index = 2
+    count = userArgs[1];
+  }
+  filePaths = userArgs.slice(index);
+  return {option, count, filePaths};
+}
+
 const parseInput = function(userArgs) {
   let option = undefined;
-  let numericOption = undefined;
+  let count = undefined;
   let index = 0;
 
   let optionDetail = userArgs[0].match("-[a-z]");
   if(optionDetail){
-    option = optionDetail[0];
-    numericOption = userArgs[0].substr(2);
-    index = 1;
-    if(numericOption === "") {
-      index = 2
-      numericOption = userArgs[1];
-    }
+    return getOption(optionDetail, userArgs); 
   }
 
   let num = userArgs[0].match(/^-[0-9]/);
   if(num) {
-    numericOption = userArgs[0].slice(1);
+    count = userArgs[0].slice(1);
     index = 1;
   }
-
   filePaths = userArgs.slice(index);
-  return {option, numericOption, filePaths};
+  return {option, count, filePaths};
 }
 
 exports.parseInput = parseInput;

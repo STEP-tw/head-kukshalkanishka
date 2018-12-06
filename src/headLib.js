@@ -37,7 +37,7 @@ const selector = function(option) {
   return func;
 }
 
-const head = function(fileDetails, {option, numericOption = 10}) {
+const head = function(fileDetails, {option, count = 10}) {
   let delimiter = "";
   let fetcher = selector(option);
   let lines = fileDetails.reduce((texts, file) =>{
@@ -49,7 +49,7 @@ const head = function(fileDetails, {option, numericOption = 10}) {
       texts.push(createHeading(file, delimiter));
     }
     delimiter = "\n";
-    texts.push(fetcher(file.content, numericOption));
+    texts.push(fetcher(file.content, count));
     return texts;
   }, []);
   return lines.join("\n"); 

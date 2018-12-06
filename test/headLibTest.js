@@ -199,7 +199,7 @@ describe("runHead", function() {
       }
     }
 
-    it("should return a string with num of lines equal to the required num of lines", function() {
+    it.only("should return a string with num of lines equal to the required num of lines", function() {
       let actual = runHead(readFile1Content, "utf-8", ["-n", "1", "file1"], validater);
 
       assert.deepEqual(actual, "this is a line 1"); 

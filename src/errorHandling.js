@@ -7,10 +7,10 @@ const validate = function(input, validater) {
       "\nusage: head [-n lines | -c bytes] [file ...]";
   }
 
-  let isAlphaMatched = input.numericOption != undefined && input.numericOption.match(/[a-zA-Z]/);
+  let isAlphaMatched = input.count != undefined && input.count.match(/[a-zA-Z]/);
 
-  if(input.numericOption <= 0 || isAlphaMatched){
-    return "head: illegal " + choices[input.option] + " count -- " + input.numericOption;
+  if(input.count <= 0 || isAlphaMatched){
+    return "head: illegal " + choices[input.option] + " count -- " + input.count;
   }
 }
 
