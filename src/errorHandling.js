@@ -1,15 +1,27 @@
+const isLineOption = function(option) {
+  return option == "-n";
+}
+
+const isCharOption = function(option) {
+  return option == "-c";
+}
+
+const isUndefined = function(option) {
+  return option == undefined;
+}
+
+const isOptionInValid = function(option) {
+  return !isUndefined(option) && !isLineOption(option) && !isCharOption(option);
+}
+
+const usage = 'usage: head [-n lines | -c bytes] [file ...]';
+
+
 const validate = function(input, validater) {
   let choices = { '-n': 'line', '-c': 'byte' };
-  if (
-    input.option != undefined &&
-    input.option != '-n' &&
-    input.option != '-c'
-  ) {
-    return (
-      'head: illegal option -- ' +
-      input.option.substr(1) +
-      '\nusage: head [-n lines | -c bytes] [file ...]'
-    );
+
+  if (isOptionInValid(input.option)) {
+    return ('head: illegal option -- ' +input.option.substr(1) + '\n' +usage);
   }
 
   let isAlphaMatched =
