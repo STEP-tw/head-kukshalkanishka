@@ -7,15 +7,25 @@ const {read,
   runHead,
   selector} = require("../src/headLib.js");
 
-let readHelloWorld = function(file, encoding) {
-  if(file && encoding) {
-    return "helloWorld"
-  }
-};
+const mockReader = function(expectedFile, expectedEncoding, expectedContent) {
 
-let readEmptyFile = function(file, encoding) {
-  if(file && encoding) {
-    return "";
+  return function(actualFile, actualencoding){
+
+    const isFileValid = function() {
+      return actualFile === expectedFile;
+    }
+
+    const isEncodingValid = function() {
+      return actualencoding === expectedEncoding;
+    }
+
+    const areArgsValid = function() {
+      return isFileValid() && isEncodingValid();
+    }
+
+  if(areArgsValid()){
+      return expectedContent;
+    }
   }
 }
 
@@ -28,11 +38,15 @@ let validater = function(file) {
 describe("read", function() {
 
   it("should return the content of provided file", function() {
+    let readHelloWorld = mockReader("../testFile", "utf8", "helloWorld"); 
+
       assert.deepEqual(read(readHelloWorld, "../testFile", "utf8"), "helloWorld");
     });
 
     it("should return an empty string when an empty file is provided", function() {
-      assert.deepEqual(read(readEmptyFile, "../testFileEmpty", "utf8"), "");
+      let readEmptyFile = mockReader("../testEmptyFile", "utf8", "");
+
+      assert.deepEqual(read(readEmptyFile, "../testEmptyFile", "utf8"), "");
     });
   });
 
@@ -40,6 +54,7 @@ describe("createDetailsOf", function() {
 
   it("should return an array of an object of file detail  when a file is provided", function() {
 
+    let readHelloWorld = () => "helloWorld"; 
     let actualOutput = createDetailsOf(readHelloWorld, ["../testFile"], "utf8", validater);
     let expectedOutput = [{fileName : "../testFile", content: "helloWorld"}];
 
@@ -48,6 +63,7 @@ describe("createDetailsOf", function() {
 
   it("should return an array of same length as num of files provided", function() {
 
+    let readHelloWorld = () => "helloWorld"; 
     let files = ["../testFile1", "../testFile2"];
     let actualOutput = createDetailsOf(readHelloWorld, files, "utf8", validater);
     let expectedOutput = [{fileName : "../testFile1", content: "helloWorld"},
@@ -144,6 +160,8 @@ describe("head", function() {
 describe("runHead", function() {
   describe("error handling", function() {
     it("should provide error message when negative line count is given", function() {
+
+      let readHelloWorld = mockReader("file1", "utf8", "helloWorld"); 
       let actualOutput = runHead(readHelloWorld, "utf-8", ["-n", "-12", "file1"], validater);
       let expectedOutput = "head: illegal line count -- -12"
 
@@ -151,6 +169,8 @@ describe("runHead", function() {
     });
 
     it("should provide error message when negative byte count is given", function() {
+
+      let readHelloWorld = mockReader("file1", "utf8", "helloWorld"); 
       let actualOutput = runHead(readHelloWorld, "utf-8", ["-c", "-12", "file1"], validater);
       let expectedOutput = "head: illegal byte count -- -12"
 
@@ -158,6 +178,8 @@ describe("runHead", function() {
     });
     
     it("should provide error message when invalid option is given", function() {
+
+      let readHelloWorld = mockReader("file1", "utf8", "helloWorld"); 
       let actualOutput = runHead(readHelloWorld, "utf-8", ["-v", "-12", "file1"], validater);
       let expectedOutput = "head: illegal option -- v\n" +
                            "usage: head [-n lines | -c bytes] [file ...]";
@@ -165,6 +187,8 @@ describe("runHead", function() {
     });
 
     it("should provide error message when invalid option is given", function() {
+
+      let readHelloWorld = mockReader("file1", "utf8", "helloWorld"); 
       let actualOutput = runHead(readHelloWorld, "utf-8", ["-v", "-12", "file1"], validater);
       let expectedOutput = "head: illegal option -- v\n" +
                            "usage: head [-n lines | -c bytes] [file ...]";
@@ -172,6 +196,8 @@ describe("runHead", function() {
     });
 
      it("should provide error message when invalid line count is 0", function() {
+
+      let readHelloWorld = mockReader("file1", "utf8", "helloWorld"); 
       let actualOutput = runHead(readHelloWorld, "utf-8", ["-n", "0", "file1"], validater);
       let expectedOutput = "head: illegal line count -- 0";
 
@@ -179,6 +205,8 @@ describe("runHead", function() {
     });
 
     it("should provide error message when invalid line count is 0", function() {
+
+      let readHelloWorld = mockReader("file1", "utf8", "helloWorld"); 
       let actualOutput = runHead(readHelloWorld, "utf-8", ["-c", "0", "file1"], validater);
       let expectedOutput = "head: illegal byte count -- 0";
 
@@ -186,6 +214,8 @@ describe("runHead", function() {
     });
 
     it("should provide error message when invalid byte count is a alphabet", function() {
+
+      let readHelloWorld = mockReader("file1", "utf8", "helloWorld"); 
       let actualOutput = runHead(readHelloWorld, "utf-8", ["-c", "xy", "file1"], validater);
       let expectedOutput = "head: illegal byte count -- xy";
 
@@ -193,6 +223,8 @@ describe("runHead", function() {
     });
 
     it("should provide error message when invalid line count is a alphabet", function() {
+
+      let readHelloWorld = mockReader("file1", "utf8", "helloWorld"); 
       let actualOutput = runHead(readHelloWorld, "utf-8", ["-n", "xy", "file1"], validater);
       let expectedOutput = "head: illegal line count -- xy";
 
@@ -217,6 +249,8 @@ describe("runHead", function() {
     }
 
     it("should return a string with num of lines equal to the required num of lines", function() {
+
+      let readHelloWorld = mockReader("file1", "utf8", "helloWorld"); 
       let actual = runHead(readFile1Content, "utf-8", ["-n", "1", "file1"], validater);
 
       assert.deepEqual(actual, "this is a line 1"); 
@@ -227,6 +261,8 @@ describe("runHead", function() {
     });
 
     it("should return a string with num of chars equal to the required num of chars", function() {
+
+      let readHelloWorld = mockReader("file1", "utf8", "helloWorld"); 
       let actual = runHead(readFile1Content, "utf-8", ["-c", "1", "file1"], validater);
 
       assert.deepEqual(actual, "t");
