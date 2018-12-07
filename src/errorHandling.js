@@ -14,8 +14,15 @@ const isOptionInValid = function(option) {
   return !isUndefined(option) && !isLineOption(option) && !isCharOption(option);
 }
 
-const usage = 'usage: head [-n lines | -c bytes] [file ...]';
+const isNegativeOrZero = function(num) {
+  return num <= 0;
+}
 
+const isCountInvalid = function(count) {
+  return isNegativeOrZero(count) || !isUndefined(count) && isNaN(count);
+}
+
+const usage = 'usage: head [-n lines | -c bytes] [file ...]';
 
 const validate = function(input, validater) {
   let choices = { '-n': 'line', '-c': 'byte' };
@@ -24,10 +31,7 @@ const validate = function(input, validater) {
     return ('head: illegal option -- ' +input.option.substr(1) + '\n' +usage);
   }
 
-  let isAlphaMatched =
-    input.count != undefined && input.count.match(/[a-zA-Z]/);
-
-  if (input.count <= 0 || isAlphaMatched) {
+  if (isCountInvalid(input.count)) {
     return (
       'head: illegal ' + choices[input.option] + ' count -- ' + input.count
     );
