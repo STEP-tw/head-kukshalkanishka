@@ -15,7 +15,7 @@ const parseInput = function(userArgs) {
   let count;
   let index = 0;
 
-  let optionDetail = userArgs[0].match('-[a-z]');
+ let optionDetail = userArgs[0].match('-[a-z]');
   if (optionDetail) {
     return parseIfOptionProvided(optionDetail, userArgs);
   }

@@ -38,4 +38,10 @@ const validate = function(input, validater) {
   }
 };
 
+exports.isOptionInValid = isOptionInValid;
+exports.isCountInvalid = isCountInvalid;
+exports.isUndefined = isUndefined;
+exports.isNegativeOrZero = isNegativeOrZero;
+exports.isLineOption = isLineOption;
+exports.isCharOption = isCharOption;
 exports.validate = validate;
