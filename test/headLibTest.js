@@ -53,7 +53,8 @@ describe('read', function() {
 
 describe('createDetailsOf', function() {
 
-    let validater = (file) => true;
+  let validater1 = (file) => true;
+  let validator2 = (file) => false;
 
   it('should return an array of an object of file detail  when a file is provided', function() {
 
@@ -62,7 +63,7 @@ describe('createDetailsOf', function() {
       readHelloWorld,
       ['../testFile'],
       'utf8',
-      validater
+      validater1
     );
     let expectedOutput = [{ fileName: '../testFile', content: 'helloWorld' }];
 
@@ -77,7 +78,7 @@ describe('createDetailsOf', function() {
       readHelloWorld,
       files,
       'utf8',
-      validater
+      validater1
     );
     let expectedOutput = [
       { fileName: '../testFile1', content: 'helloWorld' },
@@ -86,6 +87,25 @@ describe('createDetailsOf', function() {
 
     assert.deepEqual(actualOutput, expectedOutput);
   });
+
+  it('should return null value for file content when file path is invalid', function() {
+
+    let readHelloWorld = () => 'helloWorld';
+    let files = ['../testFile1', '../testFile2'];
+    let actualOutput = createDetailsOf(
+      readHelloWorld,
+      files,
+      'utf8',
+      validator2
+    );
+    let expectedOutput = [
+      { fileName: '../testFile1', content: null },
+      { fileName: '../testFile2', content: null }
+    ];
+
+    assert.deepEqual(actualOutput, expectedOutput);
+  });
+
 });
 
 describe('getLinesFromTop', function() {

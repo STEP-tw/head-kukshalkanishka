@@ -25,16 +25,16 @@ const getCharFromBeginning = function(fileContent, bytesRequired) {
   return fileContent.slice(0, bytesRequired);
 };
 
-const createHeading = function(file, delimiter) {
-  return delimiter + '==> ' + file.fileName + ' <==';
-};
-
 const selector = function(option) {
   let func = getLinesFromTop;
   if (option == '-c') {
     func = getCharFromBeginning;
   }
   return func;
+};
+
+const createHeading = function(file, delimiter) {
+  return delimiter + '==> ' + file.fileName + ' <==';
 };
 
 const noFileOrDirError = function(file){
