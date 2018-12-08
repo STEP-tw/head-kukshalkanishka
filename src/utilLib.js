@@ -1,7 +1,5 @@
-const parseIfOptionProvided = function(optionDetail, userArgs) {
-  option = optionDetail[0];
-  count = userArgs[0].substr(2);
-  index = 1;
+const parseIfOptionProvided = function(option, count, userArgs) {
+  let index = 1;
   if (count === '') {
     index = 2;
     count = userArgs[1];
@@ -10,14 +8,20 @@ const parseIfOptionProvided = function(optionDetail, userArgs) {
   return { option, count, filePaths };
 };
 
+const matchAlphabet = function(value) {
+  return value.match('-[a-z]');
+}
+
 const parseInput = function(userArgs) {
   let option;
   let count;
   let index = 0;
+  let matchedDetail = matchAlphabet(userArgs[0]);
 
- let optionDetail = userArgs[0].match('-[a-z]');
-  if (optionDetail) {
-    return parseIfOptionProvided(optionDetail, userArgs);
+  if (matchedDetail) {
+   let option = matchedDetail[0];
+   let count = userArgs[0].substr(2);
+    return parseIfOptionProvided(option, count, userArgs);
   }
 
   let num = userArgs[0].match(/^-[0-9]/);
@@ -25,6 +29,7 @@ const parseInput = function(userArgs) {
     count = userArgs[0].slice(1);
     index = 1;
   }
+
   filePaths = userArgs.slice(index);
   return { option, count, filePaths };
 };
