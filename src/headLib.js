@@ -37,17 +37,32 @@ const selector = function(option) {
   return func;
 };
 
+const noFileOrDirError = function(file){
+  return 'head: ' + file + ': No such file or directory';
+}
+
+const isNull = function(value) {
+  return value == null;
+}
+
+const isGreaterThan1 = function(num) {
+  return num > 1;
+}
+
 const head = function(fileDetails, { option, count = 10 }) {
   let delimiter = '';
   let fetcher = selector(option);
   let lines = fileDetails.reduce((texts, file) => {
-    if (file.content == null) {
-      texts.push('head: ' + file.fileName + ': No such file or directory');
+
+    if (isNull(file.content)) {
+      texts.push(noFileOrDirError(file.fileName));
       return texts;
     }
-    if (fileDetails.length > 1) {
+
+    if (isGreaterThan1(fileDetails.length)) {
       texts.push(createHeading(file, delimiter));
     }
+
     delimiter = '\n';
     texts.push(fetcher(file.content, count));
     return texts;
@@ -60,12 +75,7 @@ const runHead = function(reader, encoding, userArgs, validater) {
   if (validate(parsedInput)) {
     return validate(parsedInput);
   }
-  let fileDetails = createDetailsOf(
-    reader,
-    parsedInput.filePaths,
-    encoding,
-    validater
-  );
+  let fileDetails = createDetailsOf(reader,parsedInput.filePaths,encoding, validater);
   return head(fileDetails, parsedInput);
 };
 
