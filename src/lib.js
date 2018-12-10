@@ -46,9 +46,13 @@ const createHeading = function(file, delimiter) {
   return delimiter + "==> " + file.fileName + " <==";
 };
 
-const noFileOrDirError = function(file) {
-  return "head: " + file + ": No such file or directory";
-};
+const selectErrorMessage = function(fetchingType, file) {
+  let command = 'head: ';
+  if(fetchingType == fetchFromEnd) {
+    command  = 'tail: ';
+  }
+  return (file) => command+ file+ ': No such file or directory';
+}
 
 const isNull = function(value) {
   return value == null;
@@ -61,9 +65,10 @@ const isGreaterThan1 = function(num) {
 const fetchContent = function(fileDetails, { option, count = 10 }, fetchType) {
   let delimiter = "";
   let fetcher = selector(option);
+  let errorMessage = selectErrorMessage(fetchType);
   let lines = fileDetails.reduce((texts, file) => {
     if (isNull(file.content)) {
-      texts.push(noFileOrDirError(file.fileName));
+      texts.push(errorMessage(file.fileName));
       return texts;
     }
 
