@@ -3,7 +3,7 @@ const {
   read,
   createDetailsOf,
   getLines,
-  head,
+  fetchContent,
   runHead,
   selector,
   getChars,
@@ -110,7 +110,7 @@ describe('createDetailsOf', function() {
 
 });
 
-describe('head', function() {
+describe('fetchContent', function() {
 
   let file1Content =
     'this is a line 1\n' +
@@ -119,18 +119,18 @@ describe('head', function() {
     'this is a line 4 \n';
 
   it('should return an empty string when number of lines required is 0 ', function() {
-    let actual = head([{ fileName: 'file1', content: file1Content }], {
+    let actual = fetchContent([{ fileName: 'file1', content: file1Content }], {
       count: 0,
       option: '-n'
-    });
+    }, fetchFromBeginning);
 
     assert.deepEqual(actual, '');
   });
 
   it('should return a string with num of lines equal to the required num of lines', function() {
-    let actualOutput = head(
+    let actualOutput = fetchContent(
       [{ fileName: 'file1', content: file1Content }],
-      { count: 2, option: '-n'}
+      { count: 2, option: '-n'}, fetchFromBeginning
     );
     let expectedOutput = 'this is a line 1\n' + 'this is a line 2';
 
@@ -138,37 +138,37 @@ describe('head', function() {
   });
 
   it('should return an empty string when number of char required is 0', function() {
-    let actual = head([{ fileName: 'file1', content: file1Content }], {
+    let actual = fetchContent([{ fileName: 'file1', content: file1Content }], {
       count: 0,
       option: '-c'
-    });
+    }, fetchFromBeginning);
     assert.deepEqual(actual, '');
   });
 
   it('should return an error message when file content is null ', function() {
-    let actual = head([{ fileName: 'file1', content: null }], {
+    let actual = fetchContent([{ fileName: 'file1', content: null }], {
       count: 0,
       option: '-n'
-    });
+    }, fetchFromBeginning);
 
     assert.deepEqual(actual, 'head: file1: No such file or directory');
   });
 
   it('should return string of length equal to the num of char required', function() {
-    let actual = head([{ fileName: 'file1', content: file1Content }], {
+    let actual = fetchContent([{ fileName: 'file1', content: file1Content }], {
       count: 2,
       option: '-c'
-    });
+    }, fetchFromBeginning);
     assert.deepEqual(actual, 'th');
   });
 
   it('should return reqired file content with file names when multiple files are provided', function() {
-    let actual = head(
+    let actual = fetchContent(
       [
         { fileName: 'file1', content: file1Content },
         { fileName: 'file2', content: file1Content }
       ],
-      { count: 2, option: '-c' }
+      { count: 2, option: '-c' }, fetchFromBeginning
     );
     assert.deepEqual(actual, '==> file1 <==\nth\n\n==> file2 <==\nth');
   });

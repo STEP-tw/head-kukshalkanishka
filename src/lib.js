@@ -25,7 +25,7 @@ const fetchFromEnd = function(content, count) {
 };
 
 const getLines = function(fileContent, numOfLines, fetcher) {
-    let lines = fileContent.split("\n");
+  let lines = fileContent.split("\n");
   let requiredLines = fetcher(lines, numOfLines);
   return requiredLines.join("\n");
 };
@@ -39,7 +39,7 @@ const selector = function(option) {
   if (option == "-c") {
     func = getChars;
   }
-  return func;
+return func;
 };
 
 const createHeading = function(file, delimiter) {
@@ -58,7 +58,7 @@ const isGreaterThan1 = function(num) {
   return num > 1;
 };
 
-const head = function(fileDetails, { option, count = 10 }) {
+const fetchContent = function(fileDetails, { option, count = 10 }, fetchType) {
   let delimiter = "";
   let fetcher = selector(option);
   let lines = fileDetails.reduce((texts, file) => {
@@ -72,13 +72,13 @@ const head = function(fileDetails, { option, count = 10 }) {
     }
 
     delimiter = "\n";
-    texts.push(fetcher(file.content, count, fetchFromBeginning));
+    texts.push(fetcher(file.content, count, fetchType));
     return texts;
   }, []);
   return lines.join("\n");
 };
 
-const runHead = function(reader, encoding, userArgs, validater) {
+const run = function(reader, encoding, userArgs, validater, fetchType) {
   let parsedInput = parseInput(userArgs);
   if (validate(parsedInput)) {
     return validate(parsedInput);
@@ -89,15 +89,25 @@ const runHead = function(reader, encoding, userArgs, validater) {
     encoding,
     validater
   );
-  return head(fileDetails, parsedInput);
+  return fetchContent(fileDetails, parsedInput, fetchType);
 };
+
+const runHead = function(reader, encoding, userArgs, validater){
+  return run(reader, encoding, userArgs, validater, fetchFromBeginning);
+}
+
+const runTail = function(reader, encoding, userArgs, validater){
+  return run(reader, encoding, userArgs, validater, fetchFromEnd);
+}
 
 exports.read = read;
 exports.createDetailsOf = createDetailsOf;
-exports.head = head;
+exports.fetchContent = fetchContent;
 exports.selector = selector;
 exports.runHead = runHead;
 exports.getLines = getLines;
 exports.getChars = getChars;
 exports.fetchFromBeginning = fetchFromBeginning;
 exports.fetchFromEnd = fetchFromEnd;
+exports.runHead = runHead;
+exports.runTail = runTail;
