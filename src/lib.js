@@ -21,7 +21,7 @@ const fetchFromBeginning = function(content, count) {
 
 const fetchFromEnd = function(content, count) {
   let length = content.length;
-  return content.slice(length - count, length);
+  return content.slice(length - Math.abs(count), length);
 };
 
 const getLines = function(fileContent, numOfLines, fetcher) {
