@@ -19,7 +19,7 @@ const isNegativeOrZero = function(num) {
 }
 
 const isCountInvalid = function(count) {
-  return isNegativeOrZero(count) || !isUndefined(count) && isNaN(count);
+  return !isUndefined(count) && isNaN(count);
 }
 
 const validateHead = function(params) {
@@ -29,7 +29,7 @@ const validateHead = function(params) {
   if (isOptionInValid(params.option)) {
     return ('head: illegal option -- ' +params.option.substr(1) + '\n' +usage);
   }
-  if (isCountInvalid(params.count)) {
+  if (isNegativeOrZero(params.count) || isCountInvalid(params.count)) {
     return (
       'head: illegal ' + choices[params.option] + ' count -- ' + params.count
       );
