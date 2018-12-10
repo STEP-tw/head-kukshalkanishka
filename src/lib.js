@@ -1,5 +1,5 @@
-const { parseInput } = require('./utilLib.js');
-const { validate } = require('./errorHandling.js');
+const { parseInput } = require("./utilLib.js");
+const { validate } = require("./errorHandling.js");
 
 const read = function(reader, file, encoding) {
   return reader(file, encoding);
@@ -15,57 +15,53 @@ const createDetailsOf = function(reader, files, encoding, validater) {
   });
 };
 
-const getLinesFromTop = function(fileContent, numOfLines) {
-  let lines = fileContent.split('\n');
-  let requiredLines = lines.slice(0, numOfLines);
-  return requiredLines.join('\n');
+const fetchFromBeginning = function(content, count) {
+  return content.slice(0, count);
 };
 
-const getLinesFromBottom = function(fileContent, numOfLines) {
-  let lines = fileContent.split('\n');
-  let length = lines.length;
-  let requiredLines = lines.slice(length-1 - numOfLines, length);
-  return requiredLines.join('\n');
-}
-
-const getCharFromBeginning = function(fileContent, bytesRequired) {
-  return fileContent.slice(0, bytesRequired);
+const fetchFromEnd = function(content, count) {
+  let length = content.length;
+  return content.slice(length - count, length);
 };
 
-const getCharFromEnd = function(fileContent, bytesRequired) {
-  let length = fileContent.length;
-  return fileContent.slice(length - bytesRequired, length);
-}
+const getLines = function(fileContent, numOfLines, fetcher) {
+    let lines = fileContent.split("\n");
+  let requiredLines = fetcher(lines, numOfLines);
+  return requiredLines.join("\n");
+};
+
+const getChars = function(fileContent, bytesRequired, fetcher) {
+  return fetcher(fileContent, bytesRequired);     
+};
 
 const selector = function(option) {
-  let func = getLinesFromTop;
-  if (option == '-c') {
-    func = getCharFromBeginning;
+  let func = getLines;
+  if (option == "-c") {
+    func = getChars;
   }
   return func;
 };
 
 const createHeading = function(file, delimiter) {
-  return delimiter + '==> ' + file.fileName + ' <==';
+  return delimiter + "==> " + file.fileName + " <==";
 };
 
-const noFileOrDirError = function(file){
-  return 'head: ' + file + ': No such file or directory';
-}
+const noFileOrDirError = function(file) {
+  return "head: " + file + ": No such file or directory";
+};
 
 const isNull = function(value) {
   return value == null;
-}
+};
 
 const isGreaterThan1 = function(num) {
   return num > 1;
-}
+};
 
 const head = function(fileDetails, { option, count = 10 }) {
-  let delimiter = '';
+  let delimiter = "";
   let fetcher = selector(option);
   let lines = fileDetails.reduce((texts, file) => {
-
     if (isNull(file.content)) {
       texts.push(noFileOrDirError(file.fileName));
       return texts;
@@ -75,11 +71,11 @@ const head = function(fileDetails, { option, count = 10 }) {
       texts.push(createHeading(file, delimiter));
     }
 
-    delimiter = '\n';
-    texts.push(fetcher(file.content, count));
+    delimiter = "\n";
+    texts.push(fetcher(file.content, count, fetchFromBeginning));
     return texts;
   }, []);
-  return lines.join('\n');
+  return lines.join("\n");
 };
 
 const runHead = function(reader, encoding, userArgs, validater) {
@@ -87,16 +83,21 @@ const runHead = function(reader, encoding, userArgs, validater) {
   if (validate(parsedInput)) {
     return validate(parsedInput);
   }
-  let fileDetails = createDetailsOf(reader,parsedInput.filePaths,encoding, validater);
+  let fileDetails = createDetailsOf(
+    reader,
+    parsedInput.filePaths,
+    encoding,
+    validater
+  );
   return head(fileDetails, parsedInput);
 };
 
 exports.read = read;
 exports.createDetailsOf = createDetailsOf;
-exports.getLinesFromTop = getLinesFromTop;
-exports.getCharFromBeginning = getCharFromBeginning;
 exports.head = head;
 exports.selector = selector;
 exports.runHead = runHead;
-exports.getLinesFromBottom = getLinesFromBottom;
-exports.getCharFromEnd = getCharFromEnd;
+exports.getLines = getLines;
+exports.getChars = getChars;
+exports.fetchFromBeginning = fetchFromBeginning;
+exports.fetchFromEnd = fetchFromEnd;

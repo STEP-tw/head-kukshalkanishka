@@ -2,13 +2,13 @@ const assert = require('assert');
 const {
   read,
   createDetailsOf,
-  getLinesFromTop,
-  getCharFromBeginning,
+  getLines,
   head,
   runHead,
   selector,
-  getLinesFromBottom,
-  getCharFromEnd
+  getChars,
+  fetchFromBeginning,
+  fetchFromEnd
 } = require('../src/lib.js');
 
 const mockReader = function(expectedFile, expectedEncoding, expectedContent) {
@@ -108,41 +108,6 @@ describe('createDetailsOf', function() {
     assert.deepEqual(actualOutput, expectedOutput);
   });
 
-});
-
-describe('getLinesFromTop', function() {
-  let file1Content =
-    'this is a line 1\n' +
-    'this is a line 2\n' +
-    'this is a line 3\n' +
-    'this is a line 4 \n';
-
-  it('should return an empty string when number of lines required is 0', function() {
-    assert.deepEqual(getLinesFromTop(file1Content, 0), '');
-  });
-
-  it('should return a string of length equal to the num of lines', function() {
-    let expectedOutput = 'this is a line 1\n' + 'this is a line 2';
-
-    assert.deepEqual(getLinesFromTop(file1Content, 2), expectedOutput);
-  });
-});
-
-describe('getCharFromBeginning', function() {
-
-  let file1Content =
-    'this is a line 1\n' +
-    'this is a line 2\n' +
-    'this is a line 3\n' +
-    'this is a line 4 \n';
-
-  it('should return an empty string when bytes required is 0', function() {
-    assert.deepEqual(getCharFromBeginning(file1Content, 0), '');
-  });
-
-  it('should return string of length equal to the bytes required', function() {
-    assert.deepEqual(getCharFromBeginning(file1Content, 2), 'th');
-  });
 });
 
 describe('head', function() {
@@ -387,34 +352,16 @@ describe('runHead', function() {
 });
 
 describe('selector', function() {
-  it('should return getLinesFromTop function when -n is given in option ', function() {
-    assert.deepEqual(selector('-n'), getLinesFromTop);
+  it('should return getLines function when -n is given in option ', function() {
+    assert.deepEqual(selector('-n'), getLines);
   });
 
-  it('should return getCharFromBeginning function when -c is given in option ', function() {
-    assert.deepEqual(selector('-c'), getCharFromBeginning);
-  });
-});
-
-describe('getLinesFromBottom', function() {
-  let file1Content =
-    'this is a line 1\n' +
-    'this is a line 2\n' +
-    'this is a line 3\n' +
-    'this is a line 4\n';
-
-  it('should return an empty string when number of lines required is 0', function() {
-    assert.deepEqual(getLinesFromBottom(file1Content, 0), '');
-  });
-
-  it('should return a string of length equal to the num of lines', function() {
-    let expectedOutput = 'this is a line 3\n' + 'this is a line 4\n';
-
-    assert.deepEqual(getLinesFromBottom(file1Content, 2), expectedOutput);
+  it('should return getChars function when -c is given in option ', function() {
+    assert.deepEqual(selector('-c'), getChars);
   });
 });
 
-describe('getCharFromEnd', function() {
+describe('getLines', function() {
 
   let file1Content =
     'this is a line 1\n' +
@@ -422,11 +369,31 @@ describe('getCharFromEnd', function() {
     'this is a line 3\n' +
     'this is a line4';
 
-  it('should return an empty string when bytes required is 0', function() {
-    assert.deepEqual(getCharFromEnd(file1Content, 0), '');
+  it('should return an empty string when lines required is 0', function() {
+    assert.deepEqual(getLines(file1Content, 0, fetchFromBeginning), '');
+    assert.deepEqual(getLines(file1Content, 0, fetchFromEnd), '');
   });
 
-  it('should return string of length equal to the bytes required', function() {
-    assert.deepEqual(getCharFromEnd(file1Content, 2), 'e4');
+  it('should return specified number of lines from bottom when fetcher is getLinesFromBottom', function() {
+    let expectedOutput = 'this is a line 3\n' + 'this is a line4';
+    assert.deepEqual(getLines(file1Content, 2, fetchFromEnd), expectedOutput);
   });
 });
+
+describe('getChars',function() {
+  let file1Content =
+    'this is a line 1\n' +
+    'this is a line 2\n' +
+    'this is a line 3\n' +
+    'this is a line4';
+
+  it('should return an empty string when bytes required is 0',function() {
+    assert.deepEqual(getChars(file1Content, 0, fetchFromBeginning), '');
+    assert.deepEqual(getChars(file1Content, 0, fetchFromEnd), '');
+  });
+
+  it('should return specified number of lines from bottom when fetcher is getLinesFromBottom', function() {
+    assert.deepEqual(getChars(file1Content, 2, fetchFromEnd), 'e4');
+  });
+});
+
