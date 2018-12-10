@@ -6,7 +6,8 @@ const {
   getCharFromBeginning,
   head,
   runHead,
-  selector
+  selector,
+  getLinesFromBottom
 } = require('../src/lib.js');
 
 const mockReader = function(expectedFile, expectedEncoding, expectedContent) {
@@ -54,8 +55,8 @@ describe('read', function() {
 describe('createDetailsOf', function() {
 
   let validater1 = (file) => true;
+  
   let validator2 = (file) => false;
-
   it('should return an array of an object of file detail  when a file is provided', function() {
 
     let readHelloWorld = () => 'helloWorld';
@@ -109,7 +110,6 @@ describe('createDetailsOf', function() {
 });
 
 describe('getLinesFromTop', function() {
-
   let file1Content =
     'this is a line 1\n' +
     'this is a line 2\n' +
@@ -392,5 +392,23 @@ describe('selector', function() {
 
   it('should return getCharFromBeginning function when -c is given in option ', function() {
     assert.deepEqual(selector('-c'), getCharFromBeginning);
+  });
+});
+
+describe('getLinesFromBottom', function() {
+  let file1Content =
+    'this is a line 1\n' +
+    'this is a line 2\n' +
+    'this is a line 3\n' +
+    'this is a line 4\n';
+
+  it('should return an empty string when number of lines required is 0', function() {
+    assert.deepEqual(getLinesFromBottom(file1Content, 0), '');
+  });
+
+  it('should return a string of length equal to the num of lines', function() {
+    let expectedOutput = 'this is a line 3\n' + 'this is a line 4\n';
+
+    assert.deepEqual(getLinesFromBottom(file1Content, 2), expectedOutput);
   });
 });

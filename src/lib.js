@@ -16,10 +16,16 @@ const createDetailsOf = function(reader, files, encoding, validater) {
 };
 
 const getLinesFromTop = function(fileContent, numOfLines) {
-  lines = fileContent.split('\n');
-  requiredLines = lines.slice(0, numOfLines);
+  let lines = fileContent.split('\n');
+  let requiredLines = lines.slice(0, numOfLines);
   return requiredLines.join('\n');
 };
+
+const getLinesFromBottom = function(fileContent, numOfLines) {
+  let reversedLines = fileContent.split('\n').reverse();
+  let requiredLines = reversedLines.slice(0, numOfLines +1).reverse();
+  return requiredLines.join('\n');
+}
 
 const getCharFromBeginning = function(fileContent, bytesRequired) {
   return fileContent.slice(0, bytesRequired);
@@ -86,3 +92,4 @@ exports.getCharFromBeginning = getCharFromBeginning;
 exports.head = head;
 exports.selector = selector;
 exports.runHead = runHead;
+exports.getLinesFromBottom = getLinesFromBottom;
