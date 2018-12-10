@@ -7,7 +7,8 @@ const {
   head,
   runHead,
   selector,
-  getLinesFromBottom
+  getLinesFromBottom,
+  getCharFromEnd
 } = require('../src/lib.js');
 
 const mockReader = function(expectedFile, expectedEncoding, expectedContent) {
@@ -410,5 +411,22 @@ describe('getLinesFromBottom', function() {
     let expectedOutput = 'this is a line 3\n' + 'this is a line 4\n';
 
     assert.deepEqual(getLinesFromBottom(file1Content, 2), expectedOutput);
+  });
+});
+
+describe('getCharFromEnd', function() {
+
+  let file1Content =
+    'this is a line 1\n' +
+    'this is a line 2\n' +
+    'this is a line 3\n' +
+    'this is a line4';
+
+  it('should return an empty string when bytes required is 0', function() {
+    assert.deepEqual(getCharFromEnd(file1Content, 0), '');
+  });
+
+  it('should return string of length equal to the bytes required', function() {
+    assert.deepEqual(getCharFromEnd(file1Content, 2), 'e4');
   });
 });

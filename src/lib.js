@@ -22,14 +22,20 @@ const getLinesFromTop = function(fileContent, numOfLines) {
 };
 
 const getLinesFromBottom = function(fileContent, numOfLines) {
-  let reversedLines = fileContent.split('\n').reverse();
-  let requiredLines = reversedLines.slice(0, numOfLines +1).reverse();
+  let lines = fileContent.split('\n');
+  let length = lines.length;
+  let requiredLines = lines.slice(length-1 - numOfLines, length);
   return requiredLines.join('\n');
 }
 
 const getCharFromBeginning = function(fileContent, bytesRequired) {
   return fileContent.slice(0, bytesRequired);
 };
+
+const getCharFromEnd = function(fileContent, bytesRequired) {
+  let length = fileContent.length;
+  return fileContent.slice(length - bytesRequired, length);
+}
 
 const selector = function(option) {
   let func = getLinesFromTop;
@@ -93,3 +99,4 @@ exports.head = head;
 exports.selector = selector;
 exports.runHead = runHead;
 exports.getLinesFromBottom = getLinesFromBottom;
+exports.getCharFromEnd = getCharFromEnd;
