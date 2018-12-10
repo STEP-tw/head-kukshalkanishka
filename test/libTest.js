@@ -396,9 +396,10 @@ describe('getChars',function() {
   });
 });
 
-describe('runTail normal operation', function() {
-
+describe('run tail', function(){
   let validater = mockValidater("file1");
+describe('runTail normal operation', function() {
+  
   let file1 =
     'this is a line 1\n' +
     'this is a line 2\n' +
@@ -455,4 +456,48 @@ describe('runTail normal operation', function() {
 
     assert.deepEqual(actual1, 'ne 4');
   });
+});
+
+describe('error handling', function() {
+
+  it('should provide error message when invalid option is given', function() {
+    let readHelloWorld = mockReader('file1', 'utf8', 'helloWorld');
+    let actualOutput = runTail(
+      readHelloWorld,
+      'utf-8',
+      ['-v', '-12', 'file1'],
+      validater
+    );
+    let expectedOutput =
+      'tail: illegal option -- v\n' +
+      'usage: tail [-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]';
+    assert.deepEqual(actualOutput, expectedOutput);
+  });
+
+  it('should provide error message when invalid byte count is a alphabet', function() {
+    let readHelloWorld = mockReader('file1', 'utf8', 'helloWorld');
+    let actualOutput = runTail(
+      readHelloWorld,
+      'utf-8',
+      ['-c', 'xy', 'file1'],
+      validater
+    );
+    let expectedOutput = 'tail: illegal offset -- xy';
+
+    assert.deepEqual(actualOutput, expectedOutput);
+  });
+
+  it('should provide error message when invalid line count is a alphabet', function() {
+    let readHelloWorld = mockReader('file1', 'utf8', 'helloWorld');
+    let actualOutput = runTail(
+      readHelloWorld,
+      'utf-8',
+      ['-n', 'xy', 'file1'],
+      validater
+    );
+    let expectedOutput = 'tail: illegal offset -- xy';
+
+    assert.deepEqual(actualOutput, expectedOutput);
+  });
+});
 });
