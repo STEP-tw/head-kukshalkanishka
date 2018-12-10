@@ -7,7 +7,7 @@ const {
   head,
   runHead,
   selector
-} = require('../src/headLib.js');
+} = require('../src/lib.js');
 
 const mockReader = function(expectedFile, expectedEncoding, expectedContent) {
   return function(actualFile, actualencoding) {
