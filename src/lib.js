@@ -78,9 +78,9 @@ const fetchContent = function(fileDetails, { option, count = 10 }, fetchType) {
   return lines.join("\n");
 };
 
-const run = function(reader, encoding, userArgs, validater, fetchType) {
+const runCommand = function(reader, encoding, userArgs, validater, fetchType) {
   let parsedInput = parseInput(userArgs);
-  if (validate(parsedInput)) {
+  if (validate(parsedInput, fetchType)) {
     return validate(parsedInput);
   }
   let fileDetails = createDetailsOf(
@@ -93,11 +93,11 @@ const run = function(reader, encoding, userArgs, validater, fetchType) {
 };
 
 const runHead = function(reader, encoding, userArgs, validater){
-  return run(reader, encoding, userArgs, validater, fetchFromBeginning);
+  return runCommand(reader, encoding, userArgs, validater, fetchFromBeginning);
 }
 
 const runTail = function(reader, encoding, userArgs, validater){
-  return run(reader, encoding, userArgs, validater, fetchFromEnd);
+  return runCommand(reader, encoding, userArgs, validater, fetchFromEnd);
 }
 
 exports.read = read;

@@ -8,7 +8,8 @@ const {
   selector,
   getChars,
   fetchFromBeginning,
-  fetchFromEnd
+  fetchFromEnd,
+  runTail
 } = require('../src/lib.js');
 
 const mockReader = function(expectedFile, expectedEncoding, expectedContent) {
@@ -76,7 +77,7 @@ describe('createDetailsOf', function() {
 
     let readHelloWorld = () => 'helloWorld';
     let files = ['../testFile1', '../testFile2'];
-    let actualOutput = createDetailsOf(
+      let actualOutput = createDetailsOf(
       readHelloWorld,
       files,
       'utf8',
@@ -107,7 +108,6 @@ describe('createDetailsOf', function() {
 
     assert.deepEqual(actualOutput, expectedOutput);
   });
-
 });
 
 describe('fetchContent', function() {
@@ -397,3 +397,63 @@ describe('getChars',function() {
   });
 });
 
+describe('tailHead normal operation', function() {
+
+  let validater = mockValidater("file1");
+  let file1 =
+    'this is a line 1\n' +
+    'this is a line 2\n' +
+    'this is a line 3\n' +
+    'this is a line 4';
+
+  let readFile1Content = function(file, encoding) {
+    if ((file, encoding)) {
+      return (
+        'this is a line 1\n' +
+        'this is a line 2\n' +
+        'this is a line 3\n' +
+        'this is a line 4'
+      );
+    }
+  };
+
+  it('should return a string with num of lines equal to the required num of lines', function() {
+    let actual = runTail(
+      readFile1Content,
+      'utf-8',
+      ['-n', '1', 'file1'],
+      validater
+    );
+
+    assert.deepEqual(actual, 'this is a line 4');
+
+    let actual1 = runTail(
+      readFile1Content,
+      'utf-8',
+      ['-n', '4', 'file1'],
+      validater
+    );
+
+    assert.deepEqual(actual1, file1);
+  });
+
+  it('should return a string with num of chars equal to the required num of chars', function() {
+    let actual = runTail(
+      readFile1Content,
+      'utf-8',
+      ['-c', '1', 'file1'],
+      validater
+    );
+
+    assert.deepEqual(actual, '4');
+
+    let actual1 = runTail(
+      readFile1Content,
+      'utf-8',
+      ['-c', '4', 'file1'],
+      validater
+    );
+
+    assert.deepEqual(actual1, 'ne 4');
+  });
+});

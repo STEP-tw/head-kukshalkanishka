@@ -24,7 +24,7 @@ const isCountInvalid = function(count) {
 
 const usage = 'usage: head [-n lines | -c bytes] [file ...]';
 
-const validate = function(input, validater) {
+const validate = function(input) {
   let choices = { '-n': 'line', '-c': 'byte' };
 
   if (isOptionInValid(input.option)) {
