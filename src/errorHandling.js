@@ -22,7 +22,6 @@ const isCountInvalid = function(count) {
   return isNegativeOrZero(count) || !isUndefined(count) && isNaN(count);
 }
 
-
 const validateHead = function(params) {
   const usage = 'usage: head [-n lines | -c bytes] [file ...]';
   let choices = { '-n': 'line', '-c': 'byte' };
@@ -39,8 +38,14 @@ const validateHead = function(params) {
 
 const validateTail = function(params) {
   const usage = 'usage: tail [-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]'
+  let choices = { '-n': 'line', '-c': 'byte' };
   if (isOptionInValid(params.option)) {
     return ('tail: illegal option -- ' + params.option.substr(1) + '\n' +usage);
+  }
+  if (isCountInvalid(params.count)) {
+    return (
+      'tail: illegal ' + choices[params.option] + ' count -- ' + params.count
+      );
   }
 }
 
