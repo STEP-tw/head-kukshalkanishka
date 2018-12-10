@@ -308,7 +308,6 @@ describe('runHead', function() {
     };
 
     it('should return a string with num of lines equal to the required num of lines', function() {
-      let readHelloWorld = mockReader('file1', 'utf8', 'helloWorld');
       let actual = runHead(
         readFile1Content,
         'utf-8',
@@ -397,7 +396,7 @@ describe('getChars',function() {
   });
 });
 
-describe('tailHead normal operation', function() {
+describe('runTail normal operation', function() {
 
   let validater = mockValidater("file1");
   let file1 =
@@ -440,7 +439,7 @@ describe('tailHead normal operation', function() {
   it('should return a string with num of chars equal to the required num of chars', function() {
     let actual = runTail(
       readFile1Content,
-      'utf-8',
+    'utf-8',
       ['-c', '1', 'file1'],
       validater
     );

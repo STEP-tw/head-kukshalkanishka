@@ -1,14 +1,14 @@
 const { parseInput } = require("./utilLib.js");
-const { validate } = require("./errorHandling.js");
+const { validateHead, validateTail } = require("./errorHandling.js");
 
 const read = function(reader, file, encoding) {
   return reader(file, encoding);
 };
 
-const createDetailsOf = function(reader, files, encoding, validater) {
+const createDetailsOf = function(reader, files, encoding, validateExistance) {
   return files.map(fileName => {
     let content = null;
-    if (validater(fileName)) {
+    if (validateExistance(fileName)) {
       content = read(reader, fileName, encoding);
     }
     return { fileName, content };
@@ -31,7 +31,7 @@ const getLines = function(fileContent, numOfLines, fetcher) {
 };
 
 const getChars = function(fileContent, bytesRequired, fetcher) {
-  return fetcher(fileContent, bytesRequired);     
+  return fetcher(fileContent, bytesRequired);
 };
 
 const selector = function(option) {
@@ -39,7 +39,7 @@ const selector = function(option) {
   if (option == "-c") {
     func = getChars;
   }
-return func;
+  return func;
 };
 
 const createHeading = function(file, delimiter) {
@@ -78,27 +78,53 @@ const fetchContent = function(fileDetails, { option, count = 10 }, fetchType) {
   return lines.join("\n");
 };
 
-const runCommand = function(reader, encoding, userArgs, validater, fetchType) {
+const selectValidator = function(fetchType) {
+  if (fetchType == fetchFromBeginning) {
+    return validateHead;
+  }
+  return validateTail;
+};
+
+const runCommand = function(
+  reader,
+  encoding,
+  userArgs,
+  validateExistance,
+  fetchType
+) {
   let parsedInput = parseInput(userArgs);
-  if (validate(parsedInput, fetchType)) {
-    return validate(parsedInput);
+  let argsValidator = selectValidator(fetchType);
+  if (argsValidator(parsedInput, fetchType)) {
+    return argsValidator(parsedInput, fetchType);
   }
   let fileDetails = createDetailsOf(
     reader,
     parsedInput.filePaths,
     encoding,
-    validater
+    validateExistance
   );
   return fetchContent(fileDetails, parsedInput, fetchType);
 };
 
-const runHead = function(reader, encoding, userArgs, validater){
-  return runCommand(reader, encoding, userArgs, validater, fetchFromBeginning);
-}
+const runHead = function(reader, encoding, userArgs, validateExistance) {
+  return runCommand(
+    reader,
+    encoding,
+    userArgs,
+    validateExistance,
+    fetchFromBeginning
+  );
+};
 
-const runTail = function(reader, encoding, userArgs, validater){
-  return runCommand(reader, encoding, userArgs, validater, fetchFromEnd);
-}
+const runTail = function(reader, encoding, userArgs, validateExistance) {
+  return runCommand(
+    reader,
+    encoding,
+    userArgs,
+    validateExistance,
+    fetchFromEnd
+  );
+};
 
 exports.read = read;
 exports.createDetailsOf = createDetailsOf;

@@ -22,21 +22,27 @@ const isCountInvalid = function(count) {
   return isNegativeOrZero(count) || !isUndefined(count) && isNaN(count);
 }
 
-const usage = 'usage: head [-n lines | -c bytes] [file ...]';
 
-const validate = function(input) {
+const validateHead = function(params) {
+  const usage = 'usage: head [-n lines | -c bytes] [file ...]';
   let choices = { '-n': 'line', '-c': 'byte' };
 
-  if (isOptionInValid(input.option)) {
-    return ('head: illegal option -- ' +input.option.substr(1) + '\n' +usage);
+  if (isOptionInValid(params.option)) {
+    return ('head: illegal option -- ' +params.option.substr(1) + '\n' +usage);
   }
-
-  if (isCountInvalid(input.count)) {
+  if (isCountInvalid(params.count)) {
     return (
-      'head: illegal ' + choices[input.option] + ' count -- ' + input.count
-    );
+      'head: illegal ' + choices[params.option] + ' count -- ' + params.count
+      );
   }
-};
+}
+
+const validateTail = function(params) {
+  const usage = 'usage: tail [-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]'
+  if (isOptionInValid(params.option)) {
+    return ('tail: illegal option -- ' + params.option.substr(1) + '\n' +usage);
+  }
+}
 
 exports.isOptionInValid = isOptionInValid;
 exports.isCountInvalid = isCountInvalid;
@@ -44,4 +50,5 @@ exports.isUndefined = isUndefined;
 exports.isNegativeOrZero = isNegativeOrZero;
 exports.isLineOption = isLineOption;
 exports.isCharOption = isCharOption;
-exports.validate = validate;
+exports.validateHead = validateHead;
+exports.validateTail = validateTail;
