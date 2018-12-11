@@ -388,9 +388,12 @@ describe('getChars',function() {
 
   it('should return an empty string when bytes required is 0',function() {
     assert.deepEqual(getChars(file1Content, 0, fetchFromBeginning), '');
-    assert.deepEqual(getChars(file1Content, 0, fetchFromEnd), '');
   });
 
+  it('should return an empty array when bytes required is 0', function() {
+    assert.deepEqual(getChars(file1Content, 0, fetchFromEnd), ['']);
+    
+  });
   it('should return specified number of lines from bottom when fetcher is getLinesFromBottom', function() {
     assert.deepEqual(getChars(file1Content, 2, fetchFromEnd), 'e4');
   });

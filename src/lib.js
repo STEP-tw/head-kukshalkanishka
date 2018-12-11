@@ -21,7 +21,10 @@ const fetchFromBeginning = function(content, count) {
 
 const fetchFromEnd = function(content, count) {
   let length = content.length;
-  return content.slice(length - Math.abs(count), length);
+  if(count == 0){
+    return [''];
+  }
+  return content.slice(-Math.abs(count));
 };
 
 const getLines = function(fileContent, numOfLines, fetcher) {
@@ -46,7 +49,7 @@ const createHeading = function(file, delimiter) {
   return delimiter + "==> " + file.fileName + " <==";
 };
 
-const selectErrorMessage = function(fetchingType, file) {
+const selectErrorMessage = function(fetchingType) {
   let command = 'head: ';
   if(fetchingType == fetchFromEnd) {
     command  = 'tail: ';
@@ -54,13 +57,9 @@ const selectErrorMessage = function(fetchingType, file) {
   return (file) => command+ file+ ': No such file or directory';
 }
 
-const isNull = function(value) {
-  return value == null;
-};
+const isNull = (value) => value == null;
 
-const isGreaterThan1 = function(num) {
-  return num > 1;
-};
+const isGreaterThan1 = (num) => num > 1;
 
 const fetchContent = function(fileDetails, { option, count = 10 }, fetchType) {
   let delimiter = "";
