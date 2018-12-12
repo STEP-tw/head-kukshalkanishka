@@ -23,7 +23,7 @@ const fetchFromEnd = function(content, count) {
   let length = content.length;
   if(count == 0){
     return [''];
-  }
+  };
   return content.slice(-Math.abs(count));
 };
 
@@ -55,7 +55,7 @@ const selectErrorMessage = function(fetchingType) {
     command  = 'tail: ';
   }
   return (file) => command+ file+ ': No such file or directory';
-}
+};
 
 const isNull = (value) => value == null;
 
