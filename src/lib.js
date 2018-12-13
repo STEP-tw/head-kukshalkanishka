@@ -5,10 +5,10 @@ const read = function(reader, file, encoding) {
   return reader(file, encoding);
 };
 
-const createDetailsOf = function(reader, files, encoding, validateExistance) {
+const createDetailsOf = function(reader, files, encoding, existanceValidator) {
   return files.map(fileName => {
     let content = null;
-    if (validateExistance(fileName)) {
+    if (existanceValidator(fileName)) {
       content = read(reader, fileName, encoding);
     }
     return { fileName, content };
@@ -70,11 +70,9 @@ const fetchContent = function(fileDetails, { option, count = 10 }, fetchType) {
       texts.push(errorMessage(file.fileName));
       return texts;
     }
-
     if (isGreaterThan1(fileDetails.length)) {
       texts.push(createHeading(file, delimiter));
     }
-
     delimiter = "\n";
     texts.push(fetcher(file.content, count, fetchType));
     return texts;
@@ -93,7 +91,7 @@ const runCommand = function(
   reader,
   encoding,
   userArgs,
-  validateExistance,
+  existanceValidator,
   fetchType
 ) {
   let parsedInput = parseInput(userArgs);
@@ -105,27 +103,27 @@ const runCommand = function(
     reader,
     parsedInput.filePaths,
     encoding,
-    validateExistance
+    existanceValidator
   );
   return fetchContent(fileDetails, parsedInput, fetchType);
 };
 
-const runHead = function(reader, encoding, userArgs, validateExistance) {
+const runHead = function(reader, encoding, userArgs, existanceValidator) {
   return runCommand(
     reader,
     encoding,
     userArgs,
-    validateExistance,
+    existanceValidator,
     fetchFromBeginning
   );
 };
 
-const runTail = function(reader, encoding, userArgs, validateExistance) {
+const runTail = function(reader, encoding, userArgs, existanceValidator) {
   return runCommand(
     reader,
     encoding,
     userArgs,
-    validateExistance,
+    existanceValidator,
     fetchFromEnd
   );
 };
