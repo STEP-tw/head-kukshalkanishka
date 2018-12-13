@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { parseInput } = require('../src/utilLib.js');
+const { parseInput } = require('../src/io.js');
 
 describe('parseInput', function() {
   it('should return an object with option as (c) when first index is (-c3)', function() {
@@ -8,7 +8,7 @@ describe('parseInput', function() {
   });
 
   it('should return an object with option as undefined when there is no option specified', function() {
-    let expectedOutput = { option: undefined, count: 3, filePaths: ['file1'] };
+    let expectedOutput = {count: 3, filePaths: ['file1'] };
     assert.deepEqual(parseInput(['-3', 'file1']), expectedOutput);
   });
 

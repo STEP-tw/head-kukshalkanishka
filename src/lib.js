@@ -1,4 +1,4 @@
-const { parseInput } = require("./utilLib.js");
+const { parseInput } = require("./io.js");
 const { validateHead, validateTail } = require("./errorHandling.js");
 
 const read = function(reader, file, encoding) {
@@ -21,9 +21,9 @@ const fetchFromBeginning = function(content, count) {
 
 const fetchFromEnd = function(content, count) {
   let length = content.length;
-  if(count == 0){
-    return [''];
-  };
+  if (count == 0) {
+    return [""];
+  }
   return content.slice(-Math.abs(count));
 };
 
@@ -50,16 +50,16 @@ const createHeading = function(file, delimiter) {
 };
 
 const selectErrorMessage = function(fetchingType) {
-  let command = 'head: ';
-  if(fetchingType == fetchFromEnd) {
-    command  = 'tail: ';
+  let command = "head: ";
+  if (fetchingType == fetchFromEnd) {
+    command = "tail: ";
   }
-  return (file) => command+ file+ ': No such file or directory';
+  return file => command + file + ": No such file or directory";
 };
 
-const isNull = (value) => value == null;
+const isNull = value => value == null;
 
-const isGreaterThan1 = (num) => num > 1;
+const isGreaterThan1 = num => num > 1;
 
 const fetchContent = function(fileDetails, { option, count = 10 }, fetchType) {
   let delimiter = "";

@@ -32,6 +32,7 @@ const validateTail = function(params) {
   const usage =
     "usage: tail [-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]";
   let choices = { "-n": "line", "-c": "byte" };
+  
   if (isOptionInValid(params.option)) {
     return "tail: illegal option -- " + params.option.substr(1) + "\n" + usage;
   }
