@@ -1,15 +1,15 @@
 const { parseInput } = require("./io.js");
 const { validateHead, validateTail } = require("./errorHandling.js");
 
-const read = function(reader, file, encoding) {
-  return reader(file, encoding);
+const read = function(reader, file) {
+  return reader(file, '-utf8');
 };
 
-const createDetailsOf = function(reader, filePaths, encoding, existanceValidator) {
+const createDetailsOf = function(reader, filePaths, existanceValidator) {
   return filePaths.map(fileName => {
     let content = null;
     if (existanceValidator(fileName)) {
-      content = read(reader, fileName, encoding);
+      content = read(reader, fileName);
     }
     return { fileName, content };
   });
@@ -78,30 +78,28 @@ const selectValidator = function(fetchType) {
   return validateTail;
 };
 
-const runCommand = function(reader, encoding, userArgs, existanceValidator, fetchType) {
+const runCommand = function(reader, userArgs, existanceValidator, fetchType) {
   let parsedInput = parseInput(userArgs);
   let argsValidator = selectValidator(fetchType);
   if (argsValidator(parsedInput, fetchType)) {
     return argsValidator(parsedInput, fetchType);
   }
-  let fileDetails = createDetailsOf(reader, parsedInput.filePaths, encoding, existanceValidator);
+  let fileDetails = createDetailsOf(reader, parsedInput.filePaths, existanceValidator);
   return filterRequiredContents(fileDetails, parsedInput, fetchType);
 };
 
-const runHead = function(reader, encoding, userArgs, existanceValidator) {
+const runHead = function(reader, userArgs, existanceValidator) {
   return runCommand(
     reader,
-    encoding,
     userArgs,
     existanceValidator,
     fetchFromBeginning
   );
 };
 
-const runTail = function(reader, encoding, userArgs, existanceValidator) {
+const runTail = function(reader, userArgs, existanceValidator) {
   return runCommand(
     reader,
-    encoding,
     userArgs,
     existanceValidator,
     fetchFromEnd

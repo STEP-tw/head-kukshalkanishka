@@ -12,21 +12,13 @@ const {
   runTail
 } = require('../src/lib.js');
 
-const mockReader = function(expectedFile, expectedEncoding, expectedContent) {
-  return function(actualFile, actualencoding) {
+const mockReader = function(expectedFile, expectedContent) {
+  return function(actualFile) {
     const isFileValid = function() {
       return actualFile === expectedFile;
     };
 
-    const isEncodingValid = function() {
-      return actualencoding === expectedEncoding;
-    };
-
-    const areArgsValid = function() {
-      return isFileValid() && isEncodingValid();
-    };
-
-    if (areArgsValid()) {
+    if (isFileValid()) {
       return expectedContent;
     }
   };
@@ -42,15 +34,15 @@ const mockValidater = function(expectedFile) {
 
 describe('read', function() {
   it('should return the content of provided file', function() {
-    let readHelloWorld = mockReader('../testFile', 'utf8', 'helloWorld');
+    let readHelloWorld = mockReader('../testFile', 'helloWorld');
 
-    assert.deepEqual(read(readHelloWorld, '../testFile', 'utf8'), 'helloWorld');
+    assert.deepEqual(read(readHelloWorld, '../testFile'), 'helloWorld');
   });
 
   it('should return an empty string when an empty file is provided', function() {
-    let readEmptyFile = mockReader('../testEmptyFile', 'utf8', '');
+    let readEmptyFile = mockReader('../testEmptyFile', '');
 
-    assert.deepEqual(read(readEmptyFile, '../testEmptyFile', 'utf8'), '');
+    assert.deepEqual(read(readEmptyFile, '../testEmptyFile'), '');
   });
 });
 
@@ -65,7 +57,6 @@ describe('createDetailsOf', function() {
     let actualOutput = createDetailsOf(
       readHelloWorld,
       ['../testFile'],
-      'utf8',
       validater1
     );
     let expectedOutput = [{ fileName: '../testFile', content: 'helloWorld' }];
@@ -80,7 +71,6 @@ describe('createDetailsOf', function() {
       let actualOutput = createDetailsOf(
       readHelloWorld,
       files,
-      'utf8',
       validater1
     );
     let expectedOutput = [
@@ -98,7 +88,6 @@ describe('createDetailsOf', function() {
     let actualOutput = createDetailsOf(
       readHelloWorld,
       files,
-      'utf8',
       validator2
     );
     let expectedOutput = [
@@ -182,10 +171,9 @@ describe('runHead', function() {
 
     it('should provide error message when negative line count is given', function() {
 
-      let readHelloWorld = mockReader('file1', 'utf8', 'helloWorld');
+      let readHelloWorld = mockReader('file1', 'helloWorld');
       let actualOutput = runHead(
         readHelloWorld,
-        'utf-8',
         ['-n', '-12', 'file1'],
         validater
       );
@@ -196,10 +184,9 @@ describe('runHead', function() {
 
     it('should provide error message when negative byte count is given', function() {
 
-      let readHelloWorld = mockReader('file1', 'utf8', 'helloWorld');
+      let readHelloWorld = mockReader('file1', 'helloWorld');
       let actualOutput = runHead(
         readHelloWorld,
-        'utf-8',
         ['-c', '-12', 'file1'],
         validater
       );
@@ -209,10 +196,9 @@ describe('runHead', function() {
     });
 
     it('should provide error message when invalid option is given', function() {
-      let readHelloWorld = mockReader('file1', 'utf8', 'helloWorld');
+      let readHelloWorld = mockReader('file1', 'helloWorld');
       let actualOutput = runHead(
         readHelloWorld,
-        'utf-8',
         ['-v', '-12', 'file1'],
         validater
       );
@@ -223,10 +209,9 @@ describe('runHead', function() {
     });
 
     it('should provide error message when invalid option is given', function() {
-      let readHelloWorld = mockReader('file1', 'utf8', 'helloWorld');
+      let readHelloWorld = mockReader('file1', 'helloWorld');
       let actualOutput = runHead(
         readHelloWorld,
-        'utf-8',
         ['-v', '-12', 'file1'],
         validater
       );
@@ -237,10 +222,9 @@ describe('runHead', function() {
     });
 
     it('should provide error message when invalid line count is 0', function() {
-      let readHelloWorld = mockReader('file1', 'utf8', 'helloWorld');
+      let readHelloWorld = mockReader('file1', 'helloWorld');
       let actualOutput = runHead(
         readHelloWorld,
-        'utf-8',
         ['-n', '0', 'file1'],
         validater
       );
@@ -250,10 +234,9 @@ describe('runHead', function() {
     });
 
     it('should provide error message when invalid line count is 0', function() {
-      let readHelloWorld = mockReader('file1', 'utf8', 'helloWorld');
+      let readHelloWorld = mockReader('file1', 'helloWorld');
       let actualOutput = runHead(
         readHelloWorld,
-        'utf-8',
         ['-c', '0', 'file1'],
         validater
       );
@@ -263,10 +246,9 @@ describe('runHead', function() {
     });
 
     it('should provide error message when invalid byte count is a alphabet', function() {
-      let readHelloWorld = mockReader('file1', 'utf8', 'helloWorld');
+      let readHelloWorld = mockReader('file1', 'helloWorld');
       let actualOutput = runHead(
         readHelloWorld,
-        'utf-8',
         ['-c', 'xy', 'file1'],
         validater
       );
@@ -276,10 +258,9 @@ describe('runHead', function() {
     });
 
     it('should provide error message when invalid line count is a alphabet', function() {
-      let readHelloWorld = mockReader('file1', 'utf8', 'helloWorld');
+      let readHelloWorld = mockReader('file1', 'helloWorld');
       let actualOutput = runHead(
         readHelloWorld,
-        'utf-8',
         ['-n', 'xy', 'file1'],
         validater
       );
@@ -296,8 +277,8 @@ describe('runHead', function() {
       'this is a line 3\n' +
       'this is a line 4';
 
-    let readFile1Content = function(file, encoding) {
-      if ((file, encoding)) {
+    let readFile1Content = function(file) {
+      if ((file)) {
         return (
           'this is a line 1\n' +
           'this is a line 2\n' +
@@ -310,7 +291,6 @@ describe('runHead', function() {
     it('should return a string with num of lines equal to the required num of lines', function() {
       let actual = runHead(
         readFile1Content,
-        'utf-8',
         ['-n', '1', 'file1'],
         validater
       );
@@ -319,7 +299,6 @@ describe('runHead', function() {
 
       let actual1 = runHead(
         readFile1Content,
-        'utf-8',
         ['-n', '4', 'file1'],
         validater
       );
@@ -328,10 +307,9 @@ describe('runHead', function() {
     });
 
     it('should return a string with num of chars equal to the required num of chars', function() {
-      let readHelloWorld = mockReader('file1', 'utf8', 'helloWorld');
+      let readHelloWorld = mockReader('file1', 'helloWorld');
       let actual = runHead(
         readFile1Content,
-        'utf-8',
         ['-c', '1', 'file1'],
         validater
       );
@@ -340,7 +318,6 @@ describe('runHead', function() {
 
       let actual1 = runHead(
         readFile1Content,
-        'utf-8',
         ['-c', '4', 'file1'],
         validater
       );
@@ -399,8 +376,8 @@ describe('runTail normal operation', function() {
     'this is a line 3\n' +
     'this is a line 4';
 
-  let readFile1Content = function(file, encoding) {
-    if ((file, encoding)) {
+  let readFile1Content = function(file) {
+    if ((file)) {
       return (
         'this is a line 1\n' +
         'this is a line 2\n' +
@@ -413,7 +390,6 @@ describe('runTail normal operation', function() {
   it('should return a string with num of lines equal to the required num of lines', function() {
     let actual = runTail(
       readFile1Content,
-      'utf-8',
       ['-n', '1', 'file1'],
       validater
     );
@@ -422,7 +398,6 @@ describe('runTail normal operation', function() {
 
     let actual1 = runTail(
       readFile1Content,
-      'utf-8',
       ['-n', '4', 'file1'],
       validater
     );
@@ -433,7 +408,6 @@ describe('runTail normal operation', function() {
   it('should return a string with num of chars equal to the required num of chars', function() {
     let actual = runTail(
       readFile1Content,
-    'utf-8',
       ['-c', '1', 'file1'],
       validater
     );
@@ -442,7 +416,6 @@ describe('runTail normal operation', function() {
 
     let actual1 = runTail(
       readFile1Content,
-      'utf-8',
       ['-c', '4', 'file1'],
       validater
     );
@@ -454,10 +427,9 @@ describe('runTail normal operation', function() {
 describe('error handling', function() {
 
   it('should provide error message when invalid option is given', function() {
-    let readHelloWorld = mockReader('file1', 'utf8', 'helloWorld');
+    let readHelloWorld = mockReader('file1', 'helloWorld');
     let actualOutput = runTail(
       readHelloWorld,
-      'utf-8',
       ['-v', '-12', 'file1'],
       validater
     );
@@ -468,10 +440,9 @@ describe('error handling', function() {
   });
 
   it('should provide error message when invalid byte count is a alphabet', function() {
-    let readHelloWorld = mockReader('file1', 'utf8', 'helloWorld');
+    let readHelloWorld = mockReader('file1', 'helloWorld');
     let actualOutput = runTail(
       readHelloWorld,
-      'utf-8',
       ['-c', 'xy', 'file1'],
       validater
     );
@@ -481,10 +452,9 @@ describe('error handling', function() {
   });
 
   it('should provide error message when invalid line count is a alphabet', function() {
-    let readHelloWorld = mockReader('file1', 'utf8', 'helloWorld');
+    let readHelloWorld = mockReader('file1', 'helloWorld');
     let actualOutput = runTail(
       readHelloWorld,
-      'utf-8',
       ['-n', 'xy', 'file1'],
       validater
     );
