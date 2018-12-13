@@ -7,7 +7,7 @@ describe('parseInput', function() {
     assert.deepEqual(parseInput(['-c3', 'file1']), expectedOutput);
   });
 
-  it('should return an object with option as undefined when there is no option specified', function() {
+  it('should return an object with no options when there is no option specified', function() {
     let expectedOutput = {count: 3, filePaths: ['file1'] };
     assert.deepEqual(parseInput(['-3', 'file1']), expectedOutput);
   });
@@ -17,10 +17,8 @@ describe('parseInput', function() {
     assert.deepEqual(parseInput(['-n3', 'file1']), expectedOutput);
   });
 
-  it('should return an object with option and count as undefined when array only has a file name', function() {
+  it('should return an object with only filePaths when array only has a file name', function() {
     let expectedOutput = {
-      option: undefined,
-      count: undefined,
       filePaths: ['file1']
     };
     assert.deepEqual(parseInput(['file1']), expectedOutput);
