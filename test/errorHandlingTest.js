@@ -1,7 +1,6 @@
 const assert = require('assert');
 const {isOptionInValid,
   isCountInvalid,
-  isUndefined,
   isNegativeOrZero,
   isLineOption,
   isCharOption} = require('../src/errorHandling.js');

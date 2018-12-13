@@ -3,7 +3,7 @@ const {
   read,
   createDetailsOf,
   getLines,
-  fetchContent,
+  filterRequiredContents,
   runHead,
   selector,
   getChars,
@@ -110,7 +110,7 @@ describe('createDetailsOf', function() {
   });
 });
 
-describe('fetchContent', function() {
+describe('filterRequiredContents', function() {
 
   let file1Content =
     'this is a line 1\n' +
@@ -119,7 +119,7 @@ describe('fetchContent', function() {
     'this is a line 4 \n';
 
   it('should return an empty string when number of lines required is 0 ', function() {
-    let actual = fetchContent([{ fileName: 'file1', content: file1Content }], {
+    let actual = filterRequiredContents([{ fileName: 'file1', content: file1Content }], {
       count: 0,
       option: '-n'
     }, fetchFromBeginning);
@@ -128,7 +128,7 @@ describe('fetchContent', function() {
   });
 
   it('should return a string with num of lines equal to the required num of lines', function() {
-    let actualOutput = fetchContent(
+    let actualOutput = filterRequiredContents(
       [{ fileName: 'file1', content: file1Content }],
       { count: 2, option: '-n'}, fetchFromBeginning
     );
@@ -138,7 +138,7 @@ describe('fetchContent', function() {
   });
 
   it('should return an empty string when number of char required is 0', function() {
-    let actual = fetchContent([{ fileName: 'file1', content: file1Content }], {
+    let actual = filterRequiredContents([{ fileName: 'file1', content: file1Content }], {
       count: 0,
       option: '-c'
     }, fetchFromBeginning);
@@ -146,7 +146,7 @@ describe('fetchContent', function() {
   });
 
   it('should return an error message when file content is null ', function() {
-    let actual = fetchContent([{ fileName: 'file1', content: null }], {
+    let actual = filterRequiredContents([{ fileName: 'file1', content: null }], {
       count: 0,
       option: '-n'
     }, fetchFromBeginning);
@@ -155,7 +155,7 @@ describe('fetchContent', function() {
   });
 
   it('should return string of length equal to the num of char required', function() {
-    let actual = fetchContent([{ fileName: 'file1', content: file1Content }], {
+    let actual = filterRequiredContents([{ fileName: 'file1', content: file1Content }], {
       count: 2,
       option: '-c'
     }, fetchFromBeginning);
@@ -163,7 +163,7 @@ describe('fetchContent', function() {
   });
 
   it('should return reqired file content with file names when multiple files are provided', function() {
-    let actual = fetchContent(
+    let actual = filterRequiredContents(
       [
         { fileName: 'file1', content: file1Content },
         { fileName: 'file2', content: file1Content }
@@ -347,16 +347,6 @@ describe('runHead', function() {
 
       assert.deepEqual(actual1, 'this');
     });
-  });
-});
-
-describe('selector', function() {
-  it('should return getLines function when -n is given in option ', function() {
-    assert.deepEqual(selector('-n'), getLines);
-  });
-
-  it('should return getChars function when -c is given in option ', function() {
-    assert.deepEqual(selector('-c'), getChars);
   });
 });
 

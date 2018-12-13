@@ -14,7 +14,8 @@ const isOptionPresent = function(option) {
 const parseUsingNum = function(userArgs) {
   let count = userArgs[0].slice(1);
   let filePaths = userArgs.slice(1);
-  return {count, filePaths};
+  let option = '-n';
+  return {count, filePaths, option};
 }
 
 const parseUsingOptionWithCount = function(args) {
@@ -32,7 +33,10 @@ const parseUsingOption = function(args) {
 }
 
 const parseInput = function(userArgs) {
-  
+  let filePaths = userArgs.slice(0);
+  let option = '-n';
+  let count =  10;
+
   if(isCountOption(userArgs[0])) {
     return parseUsingNum(userArgs);
    }
@@ -45,8 +49,7 @@ const parseInput = function(userArgs) {
     return parseUsingOption(userArgs);
   }
 
-  filePaths = userArgs.slice(0);
-  return { filePaths };
+  return { filePaths, option, count };
 };
 
 exports.parseInput = parseInput;

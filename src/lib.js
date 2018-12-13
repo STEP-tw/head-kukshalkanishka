@@ -5,8 +5,8 @@ const read = function(reader, file, encoding) {
   return reader(file, encoding);
 };
 
-const createDetailsOf = function(reader, files, encoding, existanceValidator) {
-  return files.map(fileName => {
+const createDetailsOf = function(reader, filePaths, encoding, existanceValidator) {
+  return filePaths.map(fileName => {
     let content = null;
     if (existanceValidator(fileName)) {
       content = read(reader, fileName, encoding);
@@ -20,7 +20,6 @@ const fetchFromBeginning = function(content, count) {
 };
 
 const fetchFromEnd = function(content, count) {
-  let length = content.length;
   if (count == 0) {
     return [""];
   }
@@ -37,14 +36,6 @@ const getChars = function(fileContent, bytesRequired, fetcher) {
   return fetcher(fileContent, bytesRequired);
 };
 
-const selector = function(option) {
-  let func = getLines;
-  if (option == "-c") {
-    func = getChars;
-  }
-  return func;
-};
-
 const createHeading = function(file, delimiter) {
   return delimiter + "==> " + file.fileName + " <==";
 };
@@ -56,14 +47,14 @@ const selectErrorMessage = function(fetchingType) {
   }
   return file => command + file + ": No such file or directory";
 };
-
+  
 const isNull = value => value == null;
 
 const isGreaterThan1 = num => num > 1;
 
-const fetchContent = function(fileDetails, { option, count = 10 }, fetchType) {
+const filterRequiredContents = function(fileDetails, { option, count }, fetchType) {
   let delimiter = "";
-  let fetcher = selector(option);
+  let fetchers = {'-n' : getLines, '-c' : getChars};
   let errorMessage = selectErrorMessage(fetchType);
   let lines = fileDetails.reduce((texts, file) => {
     if (isNull(file.content)) {
@@ -74,7 +65,7 @@ const fetchContent = function(fileDetails, { option, count = 10 }, fetchType) {
       texts.push(createHeading(file, delimiter));
     }
     delimiter = "\n";
-    texts.push(fetcher(file.content, count, fetchType));
+    texts.push(fetchers[option](file.content, count, fetchType));
     return texts;
   }, []);
   return lines.join("\n");
@@ -87,25 +78,14 @@ const selectValidator = function(fetchType) {
   return validateTail;
 };
 
-const runCommand = function(
-  reader,
-  encoding,
-  userArgs,
-  existanceValidator,
-  fetchType
-) {
+const runCommand = function(reader, encoding, userArgs, existanceValidator, fetchType) {
   let parsedInput = parseInput(userArgs);
   let argsValidator = selectValidator(fetchType);
   if (argsValidator(parsedInput, fetchType)) {
     return argsValidator(parsedInput, fetchType);
   }
-  let fileDetails = createDetailsOf(
-    reader,
-    parsedInput.filePaths,
-    encoding,
-    existanceValidator
-  );
-  return fetchContent(fileDetails, parsedInput, fetchType);
+  let fileDetails = createDetailsOf(reader, parsedInput.filePaths, encoding, existanceValidator);
+  return filterRequiredContents(fileDetails, parsedInput, fetchType);
 };
 
 const runHead = function(reader, encoding, userArgs, existanceValidator) {
@@ -130,8 +110,7 @@ const runTail = function(reader, encoding, userArgs, existanceValidator) {
 
 exports.read = read;
 exports.createDetailsOf = createDetailsOf;
-exports.fetchContent = fetchContent;
-exports.selector = selector;
+exports.filterRequiredContents = filterRequiredContents;
 exports.runHead = runHead;
 exports.getLines = getLines;
 exports.getChars = getChars;
