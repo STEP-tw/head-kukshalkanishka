@@ -1,8 +1,8 @@
-const { parseInput } = require("./io.js");
+const { parseInput, filterCommandOutput } = require("./io.js");
 const { validateHead, validateTail } = require("./errorHandling.js");
 
 const read = function(reader, file) {
-  return reader(file, '-utf8');
+  return reader(file, 'utf-8');
 };
 
 const createDetailsOf = function(reader, filePaths, existanceValidator) {
@@ -36,9 +36,7 @@ const getChars = function(fileContent, bytesRequired, fetcher) {
   return fetcher(fileContent, bytesRequired);
 };
 
-const createHeading = function(file, delimiter) {
-  return delimiter + "==> " + file.fileName + " <==";
-};
+const createHeading = (file) => "==> " + file.fileName + " <==";
 
 const selectErrorMessage = function(fetchingType) {
   let command = "head: ";
@@ -50,25 +48,22 @@ const selectErrorMessage = function(fetchingType) {
   
 const isNull = value => value == null;
 
-const isGreaterThan1 = num => num > 1;
-
 const filterRequiredContents = function(fileDetails, { option, count }, fetchType) {
-  let delimiter = "";
   let fetchers = {'-n' : getLines, '-c' : getChars};
   let errorMessage = selectErrorMessage(fetchType);
   let lines = fileDetails.reduce((texts, file) => {
+
     if (isNull(file.content)) {
       texts.push(errorMessage(file.fileName));
       return texts;
     }
-    if (isGreaterThan1(fileDetails.length)) {
-      texts.push(createHeading(file, delimiter));
-    }
-    delimiter = "\n";
+
+    texts.push(createHeading(file));
     texts.push(fetchers[option](file.content, count, fetchType));
     return texts;
   }, []);
-  return lines.join("\n");
+
+  return lines;
 };
 
 const selectValidator = function(fetchType) {
@@ -85,7 +80,8 @@ const runCommand = function(reader, userArgs, existanceValidator, fetchType) {
     return argsValidator(parsedInput, fetchType);
   }
   let fileDetails = createDetailsOf(reader, parsedInput.filePaths, existanceValidator);
-  return filterRequiredContents(fileDetails, parsedInput, fetchType);
+  let contents = filterRequiredContents(fileDetails, parsedInput, fetchType);
+  return filterCommandOutput(contents).join('\n');
 };
 
 const runHead = function(reader, userArgs, existanceValidator) {
@@ -98,12 +94,7 @@ const runHead = function(reader, userArgs, existanceValidator) {
 };
 
 const runTail = function(reader, userArgs, existanceValidator) {
-  return runCommand(
-    reader,
-    userArgs,
-    existanceValidator,
-    fetchFromEnd
-  );
+  return runCommand(reader, userArgs, existanceValidator, fetchFromEnd);
 };
 
 exports.read = read;

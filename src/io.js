@@ -52,4 +52,12 @@ const parseInput = function(userArgs) {
   return { filePaths, option, count };
 };
 
+const filterCommandOutput = function(contents) {
+  if(contents.length == 2 ) {
+    return contents.slice(1);
+  }
+  return contents;
+}
+
 exports.parseInput = parseInput;
+exports.filterCommandOutput = filterCommandOutput;
