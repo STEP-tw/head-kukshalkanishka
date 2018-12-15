@@ -5,9 +5,13 @@ const read = function(reader, file) {
   return reader(file, 'utf-8');
 };
 
-const createDetailsOf = function(reader, filePaths, existanceValidator) {
+const selectErrorMessage = function(command, fileName) {
+  return command + ": " + fileName + ": No such file or directory";
+};
+
+const createDetailsOf = function(reader, filePaths, existanceValidator, command) {
   return filePaths.map(fileName => {
-    let content = null;
+    let content = selectErrorMessage(command, fileName);
     if (existanceValidator(fileName)) {
       content = read(reader, fileName);
     }
@@ -38,26 +42,9 @@ const getChars = function(fileContent, bytesRequired, fetcher) {
 
 const createHeading = (file) => "==> " + file.fileName + " <==";
 
-const selectErrorMessage = function(fetchingType) {
-  let command = "head: ";
-  if (fetchingType == fetchFromEnd) {
-    command = "tail: ";
-  }
-  return file => command + file + ": No such file or directory";
-};
-  
-const isNull = value => value == null;
-
 const filterRequiredContents = function(fileDetails, { option, count }, fetchType) {
   let fetchers = {'-n' : getLines, '-c' : getChars};
-  let errorMessage = selectErrorMessage(fetchType);
   let lines = fileDetails.reduce((texts, file) => {
-
-    if (isNull(file.content)) {
-      texts.push(errorMessage(file.fileName));
-      return texts;
-    }
-
     texts.push(createHeading(file));
     texts.push(fetchers[option](file.content, count, fetchType));
     return texts;
@@ -73,24 +60,29 @@ const selectValidator = function(fetchType) {
   return validateTail;
 };
 
+const selectCommand = function(fetchingType) {
+  if (fetchingType == fetchFromEnd) {
+    return "tail";
+  }
+  return "head";
+}
+
 const runCommand = function(reader, userArgs, existanceValidator, fetchType) {
   let parsedInput = parseInput(userArgs);
   let argsValidator = selectValidator(fetchType);
+  let command = selectCommand(fetchType);
+
   if (argsValidator(parsedInput, fetchType)) {
     return argsValidator(parsedInput, fetchType);
   }
-  let fileDetails = createDetailsOf(reader, parsedInput.filePaths, existanceValidator);
+
+  let fileDetails = createDetailsOf(reader, parsedInput.filePaths, existanceValidator, command);
   let contents = filterRequiredContents(fileDetails, parsedInput, fetchType);
   return filterCommandOutput(contents).join('\n');
 };
 
 const runHead = function(reader, userArgs, existanceValidator) {
-  return runCommand(
-    reader,
-    userArgs,
-    existanceValidator,
-    fetchFromBeginning
-  );
+  return runCommand(reader, userArgs, existanceValidator, fetchFromBeginning);
 };
 
 const runTail = function(reader, userArgs, existanceValidator) {
