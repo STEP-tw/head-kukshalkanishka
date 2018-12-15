@@ -42,42 +42,35 @@ const getChars = function(fileContent, bytesRequired, fetcher) {
 
 const createHeading = (file) => "==> " + file.fileName + " <==";
 
-const filterRequiredContents = function(fileDetails, { option, count }, fetchType) {
+const filterRequiredContents = function(fileDetails, { option, count }, fetchFrom) {
   let fetchers = {'-n' : getLines, '-c' : getChars};
   let lines = fileDetails.reduce((texts, file) => {
     texts.push(createHeading(file));
-    texts.push(fetchers[option](file.content, count, fetchType));
+    texts.push(fetchers[option](file.content, count, fetchFrom));
     return texts;
   }, []);
 
   return lines;
 };
 
-const selectValidator = function(fetchType) {
-  if (fetchType == fetchFromBeginning) {
-    return validateHead;
+const getValidatorAndCommand = function(fetchFrom) {
+  if (fetchFrom == fetchFromBeginning) {
+    return {'validator': validateHead, 'command': 'head'};
   }
-  return validateTail;
+  return {'validator': validateTail, 'command': 'tail'};
 };
 
-const selectCommand = function(fetchingType) {
-  if (fetchingType == fetchFromEnd) {
-    return "tail";
-  }
-  return "head";
-}
-
-const runCommand = function(reader, userArgs, existanceValidator, fetchType) {
+const runCommand = function(reader, userArgs, existanceValidator, fetchFrom) {
   let parsedInput = parseInput(userArgs);
-  let argsValidator = selectValidator(fetchType);
-  let command = selectCommand(fetchType);
+  let argsValidator = getValidatorAndCommand(fetchFrom).validator;
+  let command = getValidatorAndCommand(fetchFrom).command;
 
-  if (argsValidator(parsedInput, fetchType)) {
-    return argsValidator(parsedInput, fetchType);
+  if (argsValidator(parsedInput, fetchFrom)) {
+    return argsValidator(parsedInput, fetchFrom);
   }
 
   let fileDetails = createDetailsOf(reader, parsedInput.filePaths, existanceValidator, command);
-  let contents = filterRequiredContents(fileDetails, parsedInput, fetchType);
+  let contents = filterRequiredContents(fileDetails, parsedInput, fetchFrom);
   return filterCommandOutput(contents).join('\n');
 };
 
