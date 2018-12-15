@@ -5,10 +5,10 @@ const read = function(reader, file) {
   return reader(file, 'utf-8');
 };
 
-const createDetailsOf = function(reader, filePaths, existanceValidator) {
+const createDetailsOf = function(reader, filePaths, doesExists) {
   return filePaths.map(fileName => {
     let content = null;
-    if (existanceValidator(fileName)) {
+    if (doesExists(fileName)) {
       content = read(reader, fileName);
     }
     return { fileName, content };
@@ -69,7 +69,7 @@ const getValidatorAndCommand = function(fetchFrom) {
   return {'validator': validateTail, 'command': 'tail'};
 };
 
-const runCommand = function(reader, userArgs, existanceValidator, fetchFrom) {
+const runCommand = function(reader, userArgs, doesExists, fetchFrom) {
   let parsedInput = parseInput(userArgs);
   let argsValidator = getValidatorAndCommand(fetchFrom).validator;
   let command = getValidatorAndCommand(fetchFrom).command;
@@ -78,22 +78,17 @@ const runCommand = function(reader, userArgs, existanceValidator, fetchFrom) {
     return argsValidator(parsedInput, fetchFrom);
   }
 
-  let fileDetails = createDetailsOf(reader, parsedInput.filePaths, existanceValidator);
+  let fileDetails = createDetailsOf(reader, parsedInput.filePaths, doesExists);
   let contents = filterRequiredContents(fileDetails, parsedInput, fetchFrom, command);
   return filterCommandOutput(contents).join('\n');
 };
 
-const runHead = function(reader, userArgs, existanceValidator) {
-  return runCommand(
-    reader,
-    userArgs,
-    existanceValidator,
-    fetchFromBeginning
-  );
+const runHead = function(reader, userArgs, doesExists) {
+  return runCommand(reader, userArgs, doesExists, fetchFromBeginning);
 };
 
-const runTail = function(reader, userArgs, existanceValidator) {
-  return runCommand(reader, userArgs, existanceValidator, fetchFromEnd);
+const runTail = function(reader, userArgs, doesExists) {
+  return runCommand(reader, userArgs, doesExists, fetchFromEnd);
 };
 
 exports.read = read;

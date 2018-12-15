@@ -5,7 +5,6 @@
   getLines,
   filterRequiredContents,
   runHead,
-  selector,
   getChars,
   fetchFromBeginning,
   fetchFromEnd,
