@@ -1,5 +1,5 @@
-const assert = require("assert");
-const {
+ const assert = require("assert");
+ const {
   read,
   createDetailsOf,
   getLines,
@@ -74,26 +74,13 @@ describe("createDetailsOf", function() {
     assert.deepEqual(actualOutput, expectedOutput);
   });
 
-  it("should return error message for file content when file path is invalid for head command", function() {
+  it("should return null value for file content when file path is invalid", function() {
     let readHelloWorld = () => "helloWorld";
     let files = ["../testFile1", "../testFile2"];
-    let actualOutput = createDetailsOf(readHelloWorld, files, validator2,"head");
+    let actualOutput = createDetailsOf(readHelloWorld, files, validator2);
     let expectedOutput = [
-      { fileName: "../testFile1", content: 'head: ../testFile1: No such file or directory' },
-      { fileName: "../testFile2", content: 'head: ../testFile2: No such file or directory'}
-    ];
-
-    assert.deepEqual(actualOutput, expectedOutput);
-
-  });
-
-  it("should return error message for file content when file path is invalid for tail command", function() {
-    let readHelloWorld = () => "helloWorld";
-    let files = ["../testFile1", "../testFile2"];
-    let actualOutput = createDetailsOf(readHelloWorld, files, validator2,"tail");
-    let expectedOutput = [
-      { fileName: "../testFile1", content: 'tail: ../testFile1: No such file or directory' },
-      { fileName: "../testFile2", content: 'tail: ../testFile2: No such file or directory'}
+      { fileName: "../testFile1", content: null },
+      { fileName: "../testFile2", content: null }
     ];
 
     assert.deepEqual(actualOutput, expectedOutput);
@@ -101,7 +88,7 @@ describe("createDetailsOf", function() {
 });
 
 describe("filterRequiredContents", function() {
-  let file1Content = 
+  let file1Content =
     "this is a line 1\n" +
     "this is a line 2\n" +
     "this is a line 3\n" +
@@ -114,7 +101,8 @@ describe("filterRequiredContents", function() {
         count: 0,
         option: "-n"
       },
-      fetchFromBeginning
+      fetchFromBeginning,
+      'head'
     );
 
     assert.deepEqual(actual, ["==> file1 <==", ""]);
@@ -124,7 +112,8 @@ describe("filterRequiredContents", function() {
     let actualOutput = filterRequiredContents(
       [{ fileName: "file1", content: file1Content }],
       { count: 2, option: "-n" },
-      fetchFromBeginning
+      fetchFromBeginning,
+      'head'
     );
     let expectedOutput = [
       "==> file1 <==",
@@ -141,9 +130,24 @@ describe("filterRequiredContents", function() {
         count: 0,
         option: "-c"
       },
-      fetchFromBeginning
+      fetchFromBeginning,
+      'head'
     );
     assert.deepEqual(actual, ["==> file1 <==", ""]);
+  });
+
+  it("should return an error message when file content is null ", function() {
+    let actual = filterRequiredContents(
+      [{ fileName: "file1", content: null }],
+      {
+        count: 0,
+        option: "-n"
+      },
+      fetchFromBeginning,
+      'head'
+    );
+
+    assert.deepEqual(actual, ["head: file1: No such file or directory"]);
   });
 
   it("should return string of length equal to the num of char required", function() {
@@ -153,7 +157,8 @@ describe("filterRequiredContents", function() {
         count: 2,
         option: "-c"
       },
-      fetchFromBeginning
+      fetchFromBeginning,
+      'head'
     );
     assert.deepEqual(actual, ["==> file1 <==", "th"]);
   });
@@ -165,7 +170,8 @@ describe("filterRequiredContents", function() {
         { fileName: "file2", content: file1Content }
       ],
       { count: 2, option: "-c" },
-      fetchFromBeginning
+      fetchFromBeginning,
+      'head'
     );
     assert.deepEqual(actual, ["==> file1 <==", "th", "==> file2 <==", "th"]);
   });

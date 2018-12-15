@@ -5,13 +5,9 @@ const read = function(reader, file) {
   return reader(file, 'utf-8');
 };
 
-const selectErrorMessage = function(command, fileName) {
-  return command + ": " + fileName + ": No such file or directory";
-};
-
-const createDetailsOf = function(reader, filePaths, existanceValidator, command) {
+const createDetailsOf = function(reader, filePaths, existanceValidator) {
   return filePaths.map(fileName => {
-    let content = selectErrorMessage(command, fileName);
+    let content = null;
     if (existanceValidator(fileName)) {
       content = read(reader, fileName);
     }
@@ -40,11 +36,24 @@ const getChars = function(fileContent, bytesRequired, fetcher) {
   return fetcher(fileContent, bytesRequired);
 };
 
+const selectErrorMessage = function(command) {
+  return filePath => command + ": " + filePath + ": No such file or directory";
+};
+
 const createHeading = (file) => "==> " + file.fileName + " <==";
 
-const filterRequiredContents = function(fileDetails, { option, count }, fetchFrom) {
+const isNull = (value) => value == null;
+
+const filterRequiredContents = function(fileDetails, { option, count }, fetchFrom, command) {
   let fetchers = {'-n' : getLines, '-c' : getChars};
+  let errorMessage = selectErrorMessage(command);
   let lines = fileDetails.reduce((texts, file) => {
+
+    if (isNull(file.content)) {
+      texts.push(errorMessage(file.fileName));
+      return texts;
+    }
+
     texts.push(createHeading(file));
     texts.push(fetchers[option](file.content, count, fetchFrom));
     return texts;
@@ -69,13 +78,18 @@ const runCommand = function(reader, userArgs, existanceValidator, fetchFrom) {
     return argsValidator(parsedInput, fetchFrom);
   }
 
-  let fileDetails = createDetailsOf(reader, parsedInput.filePaths, existanceValidator, command);
-  let contents = filterRequiredContents(fileDetails, parsedInput, fetchFrom);
+  let fileDetails = createDetailsOf(reader, parsedInput.filePaths, existanceValidator);
+  let contents = filterRequiredContents(fileDetails, parsedInput, fetchFrom, command);
   return filterCommandOutput(contents).join('\n');
 };
 
 const runHead = function(reader, userArgs, existanceValidator) {
-  return runCommand(reader, userArgs, existanceValidator, fetchFromBeginning);
+  return runCommand(
+    reader,
+    userArgs,
+    existanceValidator,
+    fetchFromBeginning
+  );
 };
 
 const runTail = function(reader, userArgs, existanceValidator) {
