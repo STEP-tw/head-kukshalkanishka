@@ -2,3 +2,4 @@
 commentedText
 coverage
 .nyc_output
+.vscode/
