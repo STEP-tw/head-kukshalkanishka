@@ -33,7 +33,7 @@ const mockValidator = function(expectedFiles) {
 }
 
 describe("read", function() {
-  it("should return the content of provided file", function() {
+  it("should return a string i.e the whole content of provided file", function() {
     let readHelloWorld = mockReader(["../testFile"], ["helloWorld"]);
 
     assert.deepEqual(read(readHelloWorld, "../testFile"), "helloWorld");
@@ -48,9 +48,9 @@ describe("read", function() {
 
 describe("createDetailsOf", function() {
 
-  it("should return an array of an object of file detail  when a file is provided", function() {
+  it("should return an array of an object of file detail when a file is provided", function() {
     let validator = mockValidator(['../testFile']);    
-    let readHelloWorld = () => "helloWorld";
+    let readHelloWorld = mockReader(['../testFile'], ["helloWorld"]);
     let actualOutput = createDetailsOf(
       readHelloWorld,
       ["../testFile"],
@@ -61,23 +61,21 @@ describe("createDetailsOf", function() {
     assert.deepEqual(actualOutput, expectedOutput);
   });
 
-  it("should return an array of same length as num of files provided", function() {
-
+  it("should return an array of file detail object of same length as num of files provided", function() {
     let validator = mockValidator(['../testFile1', '../testFile2']);
-    let readHelloWorld = () => "helloWorld";
+    let readHelloWorld = mockReader(['../testFile1', '../testFile2'], ['helloWorld', 'file2Content']);
     let files = ["../testFile1", "../testFile2"];
     let actualOutput = createDetailsOf(readHelloWorld, files, validator);
     let expectedOutput = [
       { fileName: "../testFile1", content: "helloWorld" },
-      { fileName: "../testFile2", content: "helloWorld" }
+      { fileName: "../testFile2", content: "file2Content" }
     ];
 
     assert.deepEqual(actualOutput, expectedOutput);
   });
 
   it("should return null value for file content when file path is invalid", function() {
-
-    let readHelloWorld = () => "helloWorld";
+    let readHelloWorld = mockReader(['../testFile1', '../testFile2'], ['helloWorld', 'file2Content']);
     let validator = mockValidator(['../testFile1', '../testFile2']);
     let files = ["../testFile", "../testFile3"];
     let actualOutput = createDetailsOf(readHelloWorld, files, validator);
@@ -97,7 +95,7 @@ describe("filterRequiredContents", function() {
     "this is a line 3\n" +
     "this is a line 4 \n";
 
-  it("should return an empty string when number of lines required is 0 ", function() {
+  it("should return an empty string when required lines is 0 ", function() {
     let actual = filterRequiredContents(
       [{ fileName: "file1", content: file1Content }],
       {
@@ -129,10 +127,7 @@ describe("filterRequiredContents", function() {
   it("should return an empty string when number of char required is 0", function() {
     let actual = filterRequiredContents(
       [{ fileName: "file1", content: file1Content }],
-      {
-        count: 0,
-        option: "-c"
-      },
+      {count: 0, option: "-c"},
       fetchFromBeginning,
       'head'
     );
@@ -142,10 +137,7 @@ describe("filterRequiredContents", function() {
   it("should return an error message when file content is null ", function() {
     let actual = filterRequiredContents(
       [{ fileName: "file1", content: null }],
-      {
-        count: 0,
-        option: "-n"
-      },
+      {count: 0, option: "-n"},
       fetchFromBeginning,
       'head'
     );
@@ -156,10 +148,7 @@ describe("filterRequiredContents", function() {
   it("should return string of length equal to the num of char required", function() {
     let actual = filterRequiredContents(
       [{ fileName: "file1", content: file1Content }],
-      {
-        count: 2,
-        option: "-c"
-      },
+      {count: 2, option: "-c"},
       fetchFromBeginning,
       'head'
     );
