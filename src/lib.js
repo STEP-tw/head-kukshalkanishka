@@ -20,20 +20,16 @@ const fetchFromBeginning = function(content, count) {
 };
 
 const fetchFromEnd = function(content, count) {
-  if (count == 0) {
-    return [""];
-  }
   return content.slice(-Math.abs(count));
 };
 
-const getLines = function(fileContent, numOfLines, fetcher) {
-  let lines = fileContent.split("\n");
-  let requiredLines = fetcher(lines, numOfLines);
-  return requiredLines.join("\n");
-};
-
-const getChars = function(fileContent, bytesRequired, fetcher) {
-  return fetcher(fileContent, bytesRequired);
+const filterContents = function(fileContent, count, fetcher, delimiter) {
+  if(count == 0) {
+    return '';
+  }
+  let lines = fileContent.split(delimiter);
+  let requiredLines = fetcher(lines, count);
+  return requiredLines.join(delimiter);
 };
 
 const selectErrorMessage = function(command) {
@@ -45,7 +41,7 @@ const createHeading = (file) => "==> " + file.fileName + " <==";
 const isNull = (value) => value == null;
 
 const filterRequiredContents = function(fileDetails, { option, count }, fetchFrom, command) {
-  let fetchers = {'-n' : getLines, '-c' : getChars};
+  let delimiters = {'-n' : '\n', '-c' : ''};
   let errorMessage = selectErrorMessage(command);
   let lines = fileDetails.reduce((texts, file) => {
 
@@ -55,7 +51,7 @@ const filterRequiredContents = function(fileDetails, { option, count }, fetchFro
     }
 
     texts.push(createHeading(file));
-    texts.push(fetchers[option](file.content, count, fetchFrom));
+    texts.push(filterContents(file.content, count, fetchFrom, delimiters[option]));
     return texts;
   }, []);
 
@@ -95,8 +91,7 @@ exports.read = read;
 exports.createDetailsOf = createDetailsOf;
 exports.filterRequiredContents = filterRequiredContents;
 exports.runHead = runHead;
-exports.getLines = getLines;
-exports.getChars = getChars;
+exports.filterContents = filterContents;
 exports.fetchFromBeginning = fetchFromBeginning;
 exports.fetchFromEnd = fetchFromEnd;
 exports.runHead = runHead;

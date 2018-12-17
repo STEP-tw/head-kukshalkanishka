@@ -1,40 +1,40 @@
 /---------------------libTest.js---------------------//
 
- type: unnecessary counter
+ type: unnecessary counter : *done
    lineNum: 15, 27
    description: objects could be used in place of counter.
 
- type: variable name
+ type: variable name 
    lineNum: 49
    description: ‘createDetailsOf’ doesn’t convey what it does.
 
  type: more parameters
    lineNum: 99
 
- type: misleading test messages
+ type: misleading test messages : *done
    lineNum: 91- 170
    desciption: return type is array but mentioned as string and fileNames are provided             at every output so no need to mention that.
 
-   lineNum: 286
+   lineNum: 286: *done
    desciption: more information for option is required.
 
-   lineNum: 337
+   lineNum: 337:  *done
    description: ‘getLinesFromBottom’ is ‘fetchFromEnd’
 
-   lineNum: 343 - 359
+   lineNum: 343 - 359 :   *done
    description: return type is not correct.
 
- type: repeat similar test
+ type: repeat similar test : *done
    lineNum: 246
    description: same test is copied twice
 
- type: case not tested
+ type: case not tested *done
    lineNum: none
    desciption: ‘count greater than file length’ case is not handled.
 
 //-------------------------lib.js-------------------//
 
- type: not pure function.
+ type: not pure function. *done
    lineNum: 22
    description: return type is not consistance.
 

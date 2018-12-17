@@ -1,8 +1,8 @@
- const assert = require("assert");
- const {
+const assert = require("assert");
+const {
   read,
   createDetailsOf,
-  getLines,
+  filterContents,
   filterRequiredContents,
   runHead,
   getChars,
@@ -19,32 +19,31 @@ const mockReader = function(expectedFiles) {
 
 const mockValidator = function(expectedFiles) {
   return function(actualPath) {
-    if(expectedFiles[actualPath]){
+    if (expectedFiles[actualPath]) {
       return true;
     }
     return false;
-  }
-}
+  };
+};
 
 describe("read", function() {
   it("should return a string i.e the whole content of provided file", function() {
-    let readHelloWorld = mockReader({"../testFile": "helloWorld"});
+    let readHelloWorld = mockReader({ "../testFile": "helloWorld" });
 
     assert.equal(read(readHelloWorld, "../testFile"), "helloWorld");
   });
 
   it("should return an empty string when an empty file is provided", function() {
-    let readEmptyFile = mockReader({"../testEmptyFile": ""});
+    let readEmptyFile = mockReader({ "../testEmptyFile": "" });
 
     assert.equal(read(readEmptyFile, "../testEmptyFile"), "");
   });
 });
 
 describe("createDetailsOf", function() {
-
   it("should return an array of an object of file detail when a file is provided", function() {
-    let validator = mockValidator({'../testFile': 'helloWorld'});    
-    let readHelloWorld = mockReader({'../testFile': "helloWorld"});
+    let validator = mockValidator({ "../testFile": "helloWorld" });
+    let readHelloWorld = mockReader({ "../testFile": "helloWorld" });
     let actualOutput = createDetailsOf(
       readHelloWorld,
       ["../testFile"],
@@ -56,8 +55,14 @@ describe("createDetailsOf", function() {
   });
 
   it("should return an array of file detail object of same length as num of files provided", function() {
-    let validator = mockValidator({'../testFile1': 'helloWorld', '../testFile2': 'file2Content'});
-    let readHelloWorld = mockReader({'../testFile1': 'helloWorld', '../testFile2': 'file2Content'});
+    let validator = mockValidator({
+      "../testFile1": "helloWorld",
+      "../testFile2": "file2Content"
+    });
+    let readHelloWorld = mockReader({
+      "../testFile1": "helloWorld",
+      "../testFile2": "file2Content"
+    });
     let files = ["../testFile1", "../testFile2"];
     let actualOutput = createDetailsOf(readHelloWorld, files, validator);
     let expectedOutput = [
@@ -69,8 +74,14 @@ describe("createDetailsOf", function() {
   });
 
   it("should return null value for file content when file path is invalid", function() {
-    let readHelloWorld = mockReader({'../testFile1': 'helloWorld', '../testFile2': 'file2Content'});
-    let validator = mockValidator({'../testFile1': 'helloWorld', '../testFile2': 'file2Content'});
+    let readHelloWorld = mockReader({
+      "../testFile1": "helloWorld",
+      "../testFile2": "file2Content"
+    });
+    let validator = mockValidator({
+      "../testFile1": "helloWorld",
+      "../testFile2": "file2Content"
+    });
     let files = ["../testFile", "../testFile3"];
     let actualOutput = createDetailsOf(readHelloWorld, files, validator);
     let expectedOutput = [
@@ -97,7 +108,7 @@ describe("filterRequiredContents", function() {
         option: "-n"
       },
       fetchFromBeginning,
-      'head'
+      "head"
     );
 
     assert.deepEqual(actual, ["==> file1 <==", ""]);
@@ -108,7 +119,7 @@ describe("filterRequiredContents", function() {
       [{ fileName: "file1", content: file1Content }],
       { count: 2, option: "-n" },
       fetchFromBeginning,
-      'head'
+      "head"
     );
     let expectedOutput = [
       "==> file1 <==",
@@ -121,9 +132,9 @@ describe("filterRequiredContents", function() {
   it("should return an array with file name and an empty string when char count is 0", function() {
     let actual = filterRequiredContents(
       [{ fileName: "file1", content: file1Content }],
-      {count: 0, option: "-c"},
+      { count: 0, option: "-c" },
       fetchFromBeginning,
-      'head'
+      "head"
     );
     assert.deepEqual(actual, ["==> file1 <==", ""]);
   });
@@ -131,9 +142,9 @@ describe("filterRequiredContents", function() {
   it("should return an array of error message when file content is null ", function() {
     let actual = filterRequiredContents(
       [{ fileName: "file1", content: null }],
-      {count: 0, option: "-n"},
+      { count: 0, option: "-n" },
       fetchFromBeginning,
-      'head'
+      "head"
     );
 
     assert.deepEqual(actual, ["head: file1: No such file or directory"]);
@@ -142,9 +153,9 @@ describe("filterRequiredContents", function() {
   it("should return an array with file name  and string of length equal to char count", function() {
     let actual = filterRequiredContents(
       [{ fileName: "file1", content: file1Content }],
-      {count: 2, option: "-c"},
+      { count: 2, option: "-c" },
       fetchFromBeginning,
-      'head'
+      "head"
     );
     assert.deepEqual(actual, ["==> file1 <==", "th"]);
   });
@@ -157,48 +168,47 @@ describe("filterRequiredContents", function() {
       ],
       { count: 2, option: "-c" },
       fetchFromBeginning,
-      'head'
+      "head"
     );
     assert.deepEqual(actual, ["==> file1 <==", "th", "==> file2 <==", "th"]);
   });
 });
 
 describe("Head", function() {
-  
   describe("runHead for basic operations", function() {
     let file1Content =
       "this is a line 1\n" +
       "this is a line 2\n" +
       "this is a line 3\n" +
       "this is a line 4";
-    
-      let readFile1 = mockReader({'file1': file1Content});
-      let validator = mockValidator({'file1': file1Content});
 
-      it("should return a single line string required num of line is 1", function() {
+    let readFile1 = mockReader({ file1: file1Content });
+    let validator = mockValidator({ file1: file1Content });
+
+    it("should return a single line string required num of line is 1", function() {
       let actual = runHead(readFile1, ["-n", "1", "file1"], validator);
 
       assert.equal(actual, "this is a line 1");
     });
 
-    it('should return whole file content when required number of lines is equal to size of file', function() {
+    it("should return whole file content when required number of lines is equal to size of file", function() {
       let actual1 = runHead(readFile1, ["-n", "4", "file1"], validator);
-      let expected1 = 
-      "this is a line 1\n" +
-      "this is a line 2\n" +
-      "this is a line 3\n" +
-      "this is a line 4";
+      let expected1 =
+        "this is a line 1\n" +
+        "this is a line 2\n" +
+        "this is a line 3\n" +
+        "this is a line 4";
 
       assert.equal(actual1, expected1);
     });
 
-    it('should return whole file content when line count is more than the size of file', function() {
+    it("should return whole file content when line count is more than the size of file", function() {
       let actual1 = runHead(readFile1, ["-n", "4", "file1"], validator);
-      let expected1 = 
-      "this is a line 1\n" +
-      "this is a line 2\n" +
-      "this is a line 3\n" +
-      "this is a line 4";
+      let expected1 =
+        "this is a line 1\n" +
+        "this is a line 2\n" +
+        "this is a line 3\n" +
+        "this is a line 4";
 
       assert.equal(actual1, expected1);
     });
@@ -217,8 +227,8 @@ describe("Head", function() {
   });
 
   describe("error handling", function() {
-  let validator = mockValidator({"file1": 'helloWorld'});
-  let readHelloWorld = mockReader({"file1": "helloWorld"});
+    let validator = mockValidator({ file1: "helloWorld" });
+    let readHelloWorld = mockReader({ file1: "helloWorld" });
 
     it("should provide error message when negative line count is given", function() {
       let actualOutput = runHead(
@@ -299,10 +309,9 @@ describe("Head", function() {
       assert.equal(actualOutput, expectedOutput);
     });
   });
-
 });
 
-describe("getLines", function() {
+describe("filterContents", function() {
   let file1Content =
     "this is a line 1\n" +
     "this is a line 2\n" +
@@ -310,17 +319,17 @@ describe("getLines", function() {
     "this is a line4";
 
   it("should return an empty string when lines required is 0", function() {
-    assert.equal(getLines(file1Content, 0, fetchFromBeginning), "");
-    assert.equal(getLines(file1Content, 0, fetchFromEnd), "");
+    assert.equal(filterContents(file1Content, 0, fetchFromBeginning,'\n'), "");
+    assert.equal(filterContents(file1Content, 0, fetchFromEnd, '\n'), "");
   });
 
-  it("should return specified number of lines from bottom when fetcher is getLinesFromBottom", function() {
+  it("should return specified number of lines from bottom when fetcher is filterContentsFromBottom", function() {
     let expectedOutput = "this is a line 3\n" + "this is a line4";
-    assert.equal(getLines(file1Content, 2, fetchFromEnd), expectedOutput);
+    assert.equal(filterContents(file1Content, 2, fetchFromEnd, '\n'), expectedOutput);
   });
 });
 
-describe("getChars", function() {
+describe("filterContents", function() {
   let file1Content =
     "this is a line 1\n" +
     "this is a line 2\n" +
@@ -328,29 +337,37 @@ describe("getChars", function() {
     "this is a line4";
 
   it("should return an empty string when bytes required is 0", function() {
-    assert.deepEqual(getChars(file1Content, 0, fetchFromBeginning), "");
+    assert.deepEqual(filterContents(file1Content, 0, fetchFromBeginning, ''), "");
   });
 
-  it("should return an empty array when bytes required is 0", function() {
-    assert.deepEqual(getChars(file1Content, 0, fetchFromEnd), [""]);
+  it("should return an empty string when bytes required is 0", function() {
+    assert.equal(filterContents(file1Content, 0, fetchFromEnd, ''), "");
   });
   it("should return specified number of lines from bottom when fetcher is fetchFromEnd", function() {
-    assert.deepEqual(getChars(file1Content, 2, fetchFromEnd), "e4");
+    assert.deepEqual(filterContents(file1Content, 2, fetchFromEnd, ''), "e4");
+  });
+});
+
+describe("fetchFromEnd", () => {
+  let file1Content =
+    ['t', 'h', 'i', 's', ' ']; 
+
+  it("should return an array of length equal to specified number of chars", function() {
+    assert.deepEqual(fetchFromEnd(file1Content, 2,''), ['s', ' ']);
   });
 });
 
 describe("run tail", function() {
-
   describe("runTail basic operation", function() {
     let file1Content =
       "this is a line 1\n" +
       "this is a line 2\n" +
       "this is a line 3\n" +
-      "this is last line";    
+      "this is last line";
 
     let file2Content = "this is a single line file";
-    let readFile1 = mockReader({'file1': file1Content});
-    let validator = mockValidator({'file1': file1Content});
+    let readFile1 = mockReader({ file1: file1Content });
+    let validator = mockValidator({ file1: file1Content });
 
     it("should return one line content from end of file when the required num of lines is 1", function() {
       let actual = runTail(readFile1, ["-n", "1", "file1"], validator);
@@ -358,24 +375,24 @@ describe("run tail", function() {
       assert.equal(actual, "this is last line");
     });
 
-    it('should return the whole file when required num of lines is equal to file length', function(){
+    it("should return the whole file when required num of lines is equal to file length", function() {
       let actual = runTail(readFile1, ["-n", "4", "file1"], validator);
       let expected =
-      "this is a line 1\n" +
-      "this is a line 2\n" +
-      "this is a line 3\n" +
-      "this is last line"; 
+        "this is a line 1\n" +
+        "this is a line 2\n" +
+        "this is a line 3\n" +
+        "this is last line";
 
       assert.equal(actual, expected);
     });
 
-    it('should return the whole file when required num of lines is more than file length', function(){
+    it("should return the whole file when required num of lines is more than file length", function() {
       let actual = runTail(readFile1, ["-n", "10", "file1"], validator);
       let expected =
-      "this is a line 1\n" +
-      "this is a line 2\n" +
-      "this is a line 3\n" +
-      "this is last line"; 
+        "this is a line 1\n" +
+        "this is a line 2\n" +
+        "this is a line 3\n" +
+        "this is last line";
 
       assert.equal(actual, expected);
     });
@@ -393,17 +410,20 @@ describe("run tail", function() {
     });
 
     it("should return required chars with heading of each file when more than a file is given", function() {
-      let reader = mockReader({'file1':file1Content, 'file2': file2Content});
-      let validator = mockValidator({'file1':file1Content, 'file2': file2Content});
-      let actual = runTail(reader, ["-c", "2", "file1", "file2"],validator);
+      let reader = mockReader({ file1: file1Content, file2: file2Content });
+      let validator = mockValidator({
+        file1: file1Content,
+        file2: file2Content
+      });
+      let actual = runTail(reader, ["-c", "2", "file1", "file2"], validator);
 
       assert.equal(actual, "==> file1 <==\nne\n==> file2 <==\nle");
     });
   });
 
   describe("error handling", function() {
-    let validator = mockValidator({'file1': 'helloWorld'});
-    let readHelloWorld = mockReader({"file1": "helloWorld"});
+    let validator = mockValidator({ file1: "helloWorld" });
+    let readHelloWorld = mockReader({ file1: "helloWorld" });
 
     it("should provide error message when invalid option is given", function() {
       let actualOutput = runTail(
