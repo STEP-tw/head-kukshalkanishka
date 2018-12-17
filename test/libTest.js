@@ -89,7 +89,7 @@ describe("filterRequiredContents", function() {
     "this is a line 3\n" +
     "this is a line 4 \n";
 
-  it("should return an empty string when required lines is 0 ", function() {
+  it("should return an array with a file path and an empty string when required lines is 0 ", function() {
     let actual = filterRequiredContents(
       [{ fileName: "file1", content: file1Content }],
       {
@@ -103,7 +103,7 @@ describe("filterRequiredContents", function() {
     assert.deepEqual(actual, ["==> file1 <==", ""]);
   });
 
-  it("should return a string with num of lines equal to the required num of lines", function() {
+  it("should return an array with file path and lines of fileContent equal to the count", function() {
     let actualOutput = filterRequiredContents(
       [{ fileName: "file1", content: file1Content }],
       { count: 2, option: "-n" },
@@ -118,7 +118,7 @@ describe("filterRequiredContents", function() {
     assert.deepEqual(actualOutput, expectedOutput);
   });
 
-  it("should return an empty string when number of char required is 0", function() {
+  it("should return an array with file name and an empty string when char count is 0", function() {
     let actual = filterRequiredContents(
       [{ fileName: "file1", content: file1Content }],
       {count: 0, option: "-c"},
@@ -128,7 +128,7 @@ describe("filterRequiredContents", function() {
     assert.deepEqual(actual, ["==> file1 <==", ""]);
   });
 
-  it("should return an error message when file content is null ", function() {
+  it("should return an array of error message when file content is null ", function() {
     let actual = filterRequiredContents(
       [{ fileName: "file1", content: null }],
       {count: 0, option: "-n"},
@@ -139,7 +139,7 @@ describe("filterRequiredContents", function() {
     assert.deepEqual(actual, ["head: file1: No such file or directory"]);
   });
 
-  it("should return string of length equal to the num of char required", function() {
+  it("should return an array with file name  and string of length equal to char count", function() {
     let actual = filterRequiredContents(
       [{ fileName: "file1", content: file1Content }],
       {count: 2, option: "-c"},
@@ -149,7 +149,7 @@ describe("filterRequiredContents", function() {
     assert.deepEqual(actual, ["==> file1 <==", "th"]);
   });
 
-  it("should return reqired file content with file names when multiple files are provided", function() {
+  it("should return required file content with file names when multiple files are provided", function() {
     let actual = filterRequiredContents(
       [
         { fileName: "file1", content: file1Content },
