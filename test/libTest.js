@@ -30,13 +30,13 @@ describe("read", function() {
   it("should return a string i.e the whole content of provided file", function() {
     let readHelloWorld = mockReader({"../testFile": "helloWorld"});
 
-    assert.deepEqual(read(readHelloWorld, "../testFile"), "helloWorld");
+    assert.equal(read(readHelloWorld, "../testFile"), "helloWorld");
   });
 
   it("should return an empty string when an empty file is provided", function() {
     let readEmptyFile = mockReader({"../testEmptyFile": ""});
 
-    assert.deepEqual(read(readEmptyFile, "../testEmptyFile"), "");
+    assert.equal(read(readEmptyFile, "../testEmptyFile"), "");
   });
 });
 
@@ -178,7 +178,7 @@ describe("Head", function() {
       it("should return a single line string required num of line is 1", function() {
       let actual = runHead(readFile1, ["-n", "1", "file1"], validator);
 
-      assert.deepEqual(actual, "this is a line 1");
+      assert.equal(actual, "this is a line 1");
     });
 
     it('should return whole file content when required number of lines is equal to size of file', function() {
@@ -189,19 +189,30 @@ describe("Head", function() {
       "this is a line 3\n" +
       "this is a line 4";
 
-      assert.deepEqual(actual1, expected1);
+      assert.equal(actual1, expected1);
+    });
+
+    it('should return whole file content when line count is more than the size of file', function() {
+      let actual1 = runHead(readFile1, ["-n", "4", "file1"], validator);
+      let expected1 = 
+      "this is a line 1\n" +
+      "this is a line 2\n" +
+      "this is a line 3\n" +
+      "this is a line 4";
+
+      assert.equal(actual1, expected1);
     });
 
     it("should return a single charactor string when required num of chars is 1", function() {
       let actual = runHead(readFile1, ["-c", "1", "file1"], validator);
 
-      assert.deepEqual(actual, "t");
+      assert.equal(actual, "t");
     });
 
     it("should return a string with num of chars equal to required num of chars", function() {
       let actual1 = runHead(readFile1, ["-c", "4", "file1"], validator);
 
-      assert.deepEqual(actual1, "this");
+      assert.equal(actual1, "this");
     });
   });
 
@@ -217,7 +228,7 @@ describe("Head", function() {
       );
       let expectedOutput = "head: illegal line count -- -12";
 
-      assert.deepEqual(actualOutput, expectedOutput);
+      assert.equal(actualOutput, expectedOutput);
     });
 
     it("should provide error message when negative byte count is given", function() {
@@ -228,7 +239,7 @@ describe("Head", function() {
       );
       let expectedOutput = "head: illegal byte count -- -12";
 
-      assert.deepEqual(actualOutput, expectedOutput);
+      assert.equal(actualOutput, expectedOutput);
     });
 
     it("should provide error message when invalid option is given", function() {
@@ -241,20 +252,7 @@ describe("Head", function() {
         "head: illegal option -- v\n" +
         "usage: head [-n lines | -c bytes] [file ...]";
 
-      assert.deepEqual(actualOutput, expectedOutput);
-    });
-
-    it("should provide error message when invalid option is given", function() {
-      let actualOutput = runHead(
-        readHelloWorld,
-        ["-v", "-12", "file1"],
-        validator
-      );
-      let expectedOutput =
-        "head: illegal option -- v\n" +
-        "usage: head [-n lines | -c bytes] [file ...]";
-
-      assert.deepEqual(actualOutput, expectedOutput);
+      assert.equal(actualOutput, expectedOutput);
     });
 
     it("should provide error message when invalid line count is 0", function() {
@@ -265,7 +263,7 @@ describe("Head", function() {
       );
       let expectedOutput = "head: illegal line count -- 0";
 
-      assert.deepEqual(actualOutput, expectedOutput);
+      assert.equal(actualOutput, expectedOutput);
     });
 
     it("should provide error message when invalid line count is 0", function() {
@@ -276,10 +274,10 @@ describe("Head", function() {
       );
       let expectedOutput = "head: illegal byte count -- 0";
 
-      assert.deepEqual(actualOutput, expectedOutput);
+      assert.equal(actualOutput, expectedOutput);
     });
 
-    it("should provide error message when invalid byte count is a alphabet", function() {
+    it("should provide error message when byte count is a alphabet", function() {
       let actualOutput = runHead(
         readHelloWorld,
         ["-c", "xy", "file1"],
@@ -287,10 +285,10 @@ describe("Head", function() {
       );
       let expectedOutput = "head: illegal byte count -- xy";
 
-      assert.deepEqual(actualOutput, expectedOutput);
+      assert.equal(actualOutput, expectedOutput);
     });
 
-    it("should provide error message when invalid line count is a alphabet", function() {
+    it("should provide error message when line count is a alphabet", function() {
       let actualOutput = runHead(
         readHelloWorld,
         ["-n", "xy", "file1"],
@@ -298,7 +296,7 @@ describe("Head", function() {
       );
       let expectedOutput = "head: illegal line count -- xy";
 
-      assert.deepEqual(actualOutput, expectedOutput);
+      assert.equal(actualOutput, expectedOutput);
     });
   });
 
@@ -312,13 +310,13 @@ describe("getLines", function() {
     "this is a line4";
 
   it("should return an empty string when lines required is 0", function() {
-    assert.deepEqual(getLines(file1Content, 0, fetchFromBeginning), "");
-    assert.deepEqual(getLines(file1Content, 0, fetchFromEnd), "");
+    assert.equal(getLines(file1Content, 0, fetchFromBeginning), "");
+    assert.equal(getLines(file1Content, 0, fetchFromEnd), "");
   });
 
   it("should return specified number of lines from bottom when fetcher is getLinesFromBottom", function() {
     let expectedOutput = "this is a line 3\n" + "this is a line4";
-    assert.deepEqual(getLines(file1Content, 2, fetchFromEnd), expectedOutput);
+    assert.equal(getLines(file1Content, 2, fetchFromEnd), expectedOutput);
   });
 });
 
@@ -336,7 +334,7 @@ describe("getChars", function() {
   it("should return an empty array when bytes required is 0", function() {
     assert.deepEqual(getChars(file1Content, 0, fetchFromEnd), [""]);
   });
-  it("should return specified number of lines from bottom when fetcher is getLinesFromBottom", function() {
+  it("should return specified number of lines from bottom when fetcher is fetchFromEnd", function() {
     assert.deepEqual(getChars(file1Content, 2, fetchFromEnd), "e4");
   });
 });
@@ -357,7 +355,7 @@ describe("run tail", function() {
     it("should return one line content from end of file when the required num of lines is 1", function() {
       let actual = runTail(readFile1, ["-n", "1", "file1"], validator);
 
-      assert.deepEqual(actual, "this is last line");
+      assert.equal(actual, "this is last line");
     });
 
     it('should return the whole file when required num of lines is equal to file length', function(){
@@ -368,19 +366,30 @@ describe("run tail", function() {
       "this is a line 3\n" +
       "this is last line"; 
 
-      assert.deepEqual(actual, expected);
+      assert.equal(actual, expected);
+    });
+
+    it('should return the whole file when required num of lines is more than file length', function(){
+      let actual = runTail(readFile1, ["-n", "10", "file1"], validator);
+      let expected =
+      "this is a line 1\n" +
+      "this is a line 2\n" +
+      "this is a line 3\n" +
+      "this is last line"; 
+
+      assert.equal(actual, expected);
     });
 
     it("should return a charactor required num of chars is 1", function() {
       let actual = runTail(readFile1, ["-c", "1", "file1"], validator);
 
-      assert.deepEqual(actual, "e");
+      assert.equal(actual, "e");
     });
 
     it("should return required num of chars from end of the file", function() {
       let actual1 = runTail(readFile1, ["-c", "4", "file1"], validator);
 
-      assert.deepEqual(actual1, "line");
+      assert.equal(actual1, "line");
     });
 
     it("should return required chars with heading of each file when more than a file is given", function() {
@@ -388,7 +397,7 @@ describe("run tail", function() {
       let validator = mockValidator({'file1':file1Content, 'file2': file2Content});
       let actual = runTail(reader, ["-c", "2", "file1", "file2"],validator);
 
-      assert.deepEqual(actual, "==> file1 <==\nne\n==> file2 <==\nle");
+      assert.equal(actual, "==> file1 <==\nne\n==> file2 <==\nle");
     });
   });
 
@@ -406,7 +415,7 @@ describe("run tail", function() {
         "tail: illegal option -- v\n" +
         "usage: tail [-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]";
 
-      assert.deepEqual(actualOutput, expectedOutput);
+      assert.equal(actualOutput, expectedOutput);
     });
 
     it("should provide error message when invalid byte count is a alphabet", function() {
@@ -417,7 +426,7 @@ describe("run tail", function() {
       );
       let expectedOutput = "tail: illegal offset -- xy";
 
-      assert.deepEqual(actualOutput, expectedOutput);
+      assert.equal(actualOutput, expectedOutput);
     });
 
     it("should provide error message when invalid line count is a alphabet", function() {
@@ -428,7 +437,7 @@ describe("run tail", function() {
       );
       let expectedOutput = "tail: illegal offset -- xy";
 
-      assert.deepEqual(actualOutput, expectedOutput);
+      assert.equal(actualOutput, expectedOutput);
     });
   });
 });
