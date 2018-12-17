@@ -320,29 +320,20 @@ describe("filterContents", function() {
 
   it("should return an empty string when lines required is 0", function() {
     assert.equal(filterContents(file1Content, 0, fetchFromBeginning,'\n'), "");
-    assert.equal(filterContents(file1Content, 0, fetchFromEnd, '\n'), "");
   });
 
-  it("should return specified number of lines from bottom when fetcher is filterContentsFromBottom", function() {
-    let expectedOutput = "this is a line 3\n" + "this is a line4";
-    assert.equal(filterContents(file1Content, 2, fetchFromEnd, '\n'), expectedOutput);
+  it("should return an empty string when lines required is 0 when fetcher is fetchFromBeginning", function() {
+  assert.equal(filterContents(file1Content, 0, fetchFromEnd, '\n'), "");
   });
-});
 
-describe("filterContents", function() {
-  let file1Content =
-    "this is a line 1\n" +
-    "this is a line 2\n" +
-    "this is a line 3\n" +
-    "this is a line4";
-
-  it("should return an empty string when bytes required is 0", function() {
+  it("should return an empty string when bytes required is 0 when fetcher is fetchFromBeginning", function() {
     assert.deepEqual(filterContents(file1Content, 0, fetchFromBeginning, ''), "");
   });
 
-  it("should return an empty string when bytes required is 0", function() {
+  it("should return an empty string when bytes required is 0 when fetcher is fetchFromEnd", function() {
     assert.equal(filterContents(file1Content, 0, fetchFromEnd, ''), "");
   });
+
   it("should return specified number of lines from bottom when fetcher is fetchFromEnd", function() {
     assert.deepEqual(filterContents(file1Content, 2, fetchFromEnd, ''), "e4");
   });
