@@ -1,6 +1,5 @@
 const assert = require('assert');
 const {isOptionInValid,
-  isCountInvalid,
   isNegativeOrZero,
   isLineOption,
   isCharOption} = require('../src/errorHandling.js');
@@ -20,10 +19,6 @@ describe("isOptionInValid", function() {
   it("should return false when -n or -c are provided as a option", function() {
     assert.deepEqual(isOptionInValid("-n"), false);
     assert.deepEqual(isOptionInValid("-c"), false);
-  });
-
-  it("should return false when option is undefined", function() {
-    assert.deepEqual(isOptionInValid(undefined), false);
   });
 });
 
@@ -56,16 +51,6 @@ describe("isNegativeOrZero", function() {
     assert.deepEqual(isNegativeOrZero(12), false);
   });
 
-  it("should return true for negative and zero value", function() {
-    assert.deepEqual(isNegativeOrZero(-12), true);
-    assert.deepEqual(isNegativeOrZero(0), true);
-  });
-});
-
-describe("isCountInvalid", function() {
-  it("should return false when a whole number is given", function() {
-    assert.deepEqual(isCountInvalid(2), false);
-  });
   it("should return true for negative and zero value", function() {
     assert.deepEqual(isNegativeOrZero(-12), true);
     assert.deepEqual(isNegativeOrZero(0), true);

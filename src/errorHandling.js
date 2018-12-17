@@ -2,17 +2,13 @@ const isLineOption = option => option == "-n";
 
 const isCharOption = option => option == "-c";
 
-const isUndefined = option => option == undefined;
-
 const isOptionInValid = option =>
-  !isUndefined(option) && !isLineOption(option) && !isCharOption(option);
+  !isLineOption(option) && !isCharOption(option);
 
 const isNegativeOrZero = num => num <= 0;
 
-const isCountInvalid = count => !isUndefined(count) && isNaN(count);
-
 const isHeadCountInvalid = count =>
-  isNegativeOrZero(count) || isCountInvalid(count);
+  isNegativeOrZero(count) || isNaN(count);
 
 const validateHead = function(params) {
   const usage = "usage: head [-n lines | -c bytes] [file ...]";
@@ -36,14 +32,12 @@ const validateTail = function(params) {
   if (isOptionInValid(params.option)) {
     return "tail: illegal option -- " + params.option.substr(1) + "\n" + usage;
   }
-  if (isCountInvalid(params.count)) {
+  if (isNaN(params.count)) {
     return "tail: illegal offset -- " + params.count;
   }
 };
 
 exports.isOptionInValid = isOptionInValid;
-exports.isCountInvalid = isCountInvalid;
-exports.isUndefined = isUndefined;
 exports.isNegativeOrZero = isNegativeOrZero;
 exports.isLineOption = isLineOption;
 exports.isCharOption = isCharOption;
