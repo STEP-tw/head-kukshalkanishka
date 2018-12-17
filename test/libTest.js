@@ -3,7 +3,7 @@ const {
   read,
   createDetailsOf,
   filterContents,
-  filterRequiredContents,
+  formatContents,
   runHead,
   getChars,
   fetchFromBeginning,
@@ -93,7 +93,7 @@ describe("createDetailsOf", function() {
   });
 });
 
-describe("filterRequiredContents", function() {
+describe("formatContents", function() {
   let file1Content =
     "this is a line 1\n" +
     "this is a line 2\n" +
@@ -101,13 +101,13 @@ describe("filterRequiredContents", function() {
     "this is a line 4 \n";
 
   it("should return an array with a file path and an empty string when required lines is 0 ", function() {
-    let actual = filterRequiredContents(
+    let actual = formatContents(
       [{ fileName: "file1", content: file1Content }],
       {
         count: 0,
         option: "-n"
       },
-      fetchFromBeginning,
+      filterContents.bind('null', fetchFromBeginning),      
       "head"
     );
 
@@ -115,10 +115,10 @@ describe("filterRequiredContents", function() {
   });
 
   it("should return an array with file path and lines of fileContent equal to the count", function() {
-    let actualOutput = filterRequiredContents(
+    let actualOutput = formatContents(
       [{ fileName: "file1", content: file1Content }],
       { count: 2, option: "-n" },
-      fetchFromBeginning,
+      filterContents.bind('null', fetchFromBeginning),      
       "head"
     );
     let expectedOutput = [
@@ -130,20 +130,20 @@ describe("filterRequiredContents", function() {
   });
 
   it("should return an array with file name and an empty string when char count is 0", function() {
-    let actual = filterRequiredContents(
+    let actual = formatContents(
       [{ fileName: "file1", content: file1Content }],
       { count: 0, option: "-c" },
-      fetchFromBeginning,
+      filterContents.bind('null', fetchFromBeginning),      
       "head"
     );
     assert.deepEqual(actual, ["==> file1 <==", ""]);
   });
 
   it("should return an array of error message when file content is null ", function() {
-    let actual = filterRequiredContents(
+    let actual = formatContents(
       [{ fileName: "file1", content: null }],
       { count: 0, option: "-n" },
-      fetchFromBeginning,
+      filterContents.bind('null', fetchFromBeginning),      
       "head"
     );
 
@@ -151,23 +151,23 @@ describe("filterRequiredContents", function() {
   });
 
   it("should return an array with file name  and string of length equal to char count", function() {
-    let actual = filterRequiredContents(
+    let actual = formatContents(
       [{ fileName: "file1", content: file1Content }],
       { count: 2, option: "-c" },
-      fetchFromBeginning,
-      "head"
+      filterContents.bind('null', fetchFromBeginning),
+       "head"
     );
     assert.deepEqual(actual, ["==> file1 <==", "th"]);
   });
 
   it("should return required file content with file names when multiple files are provided", function() {
-    let actual = filterRequiredContents(
+    let actual = formatContents(
       [
         { fileName: "file1", content: file1Content },
         { fileName: "file2", content: file1Content }
       ],
       { count: 2, option: "-c" },
-      fetchFromBeginning,
+      filterContents.bind('null', fetchFromBeginning),
       "head"
     );
     assert.deepEqual(actual, ["==> file1 <==", "th", "==> file2 <==", "th"]);
@@ -319,23 +319,23 @@ describe("filterContents", function() {
     "this is a line4";
 
   it("should return an empty string when lines required is 0", function() {
-    assert.equal(filterContents(file1Content, 0, fetchFromBeginning,'\n'), "");
+    assert.equal(filterContents(fetchFromBeginning, file1Content, 0, '\n'), "");
   });
 
   it("should return an empty string when lines required is 0 when fetcher is fetchFromBeginning", function() {
-  assert.equal(filterContents(file1Content, 0, fetchFromEnd, '\n'), "");
+  assert.equal(filterContents(fetchFromBeginning,  file1Content, 0, '\n'), "");
   });
 
   it("should return an empty string when bytes required is 0 when fetcher is fetchFromBeginning", function() {
-    assert.deepEqual(filterContents(file1Content, 0, fetchFromBeginning, ''), "");
+    assert.deepEqual(filterContents(fetchFromBeginning, file1Content, 0, ''), "");
   });
 
   it("should return an empty string when bytes required is 0 when fetcher is fetchFromEnd", function() {
-    assert.equal(filterContents(file1Content, 0, fetchFromEnd, ''), "");
+    assert.equal(filterContents(fetchFromEnd, file1Content, 0, ''), "");
   });
 
   it("should return specified number of lines from bottom when fetcher is fetchFromEnd", function() {
-    assert.deepEqual(filterContents(file1Content, 2, fetchFromEnd, ''), "e4");
+    assert.deepEqual(filterContents(fetchFromEnd, file1Content, 2, ''), "e4");
   });
 });
 

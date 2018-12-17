@@ -2,7 +2,7 @@ const { parseInput, filterCommandOutput } = require("./io.js");
 const { validateHead, validateTail } = require("./errorHandling.js");
 
 const read = function(reader, file) {
-  return reader(file, 'utf-8');
+  return reader(file, "utf-8");
 };
 
 const createDetailsOf = function(reader, filePaths, doesExists) {
@@ -23,9 +23,9 @@ const fetchFromEnd = function(content, count) {
   return content.slice(-Math.abs(count));
 };
 
-const filterContents = function(fileContent, count, fetcher, delimiter) {
-  if(count == 0) {
-    return '';
+const filterContents = function(fetcher, fileContent, count, delimiter) {
+  if (count == 0) {
+    return "";
   }
   let lines = fileContent.split(delimiter);
   let requiredLines = fetcher(lines, count);
@@ -36,60 +36,65 @@ const selectErrorMessage = function(command) {
   return filePath => command + ": " + filePath + ": No such file or directory";
 };
 
-const createHeading = (file) => "==> " + file.fileName + " <==";
+const createHeading = file => "==> " + file.fileName + " <==";
 
-const isNull = (value) => value == null;
+const isNull = value => value == null;
 
-const filterRequiredContents = function(fileDetails, { option, count }, fetchFrom, command) {
-  let delimiters = {'-n' : '\n', '-c' : ''};
+const formatContents = function(
+  fileDetails,
+  { option, count },
+  fetchFrom,
+  command
+) {
+  let delimiters = { "-n": "\n", "-c": "" };
   let errorMessage = selectErrorMessage(command);
   let lines = fileDetails.reduce((texts, file) => {
-
     if (isNull(file.content)) {
       texts.push(errorMessage(file.fileName));
       return texts;
     }
 
     texts.push(createHeading(file));
-    texts.push(filterContents(file.content, count, fetchFrom, delimiters[option]));
+    texts.push(fetchFrom(file.content, count, delimiters[option]));
     return texts;
   }, []);
 
   return lines;
 };
 
-const getValidatorAndCommand = function(fetchFrom) {
-  if (fetchFrom == fetchFromBeginning) {
-    return {'validator': validateHead, 'command': 'head'};
-  }
-  return {'validator': validateTail, 'command': 'tail'};
-};
-
-const runCommand = function(reader, userArgs, doesExists, fetchFrom) {
+const runCommand = function(reader, userArgs, doesExists) {
   let parsedInput = parseInput(userArgs);
-  let argsValidator = getValidatorAndCommand(fetchFrom).validator;
-  let command = getValidatorAndCommand(fetchFrom).command;
 
-  if (argsValidator(parsedInput, fetchFrom)) {
-    return argsValidator(parsedInput, fetchFrom);
+  if (this.validator(parsedInput)) {
+    return this.validator(parsedInput);
   }
 
   let fileDetails = createDetailsOf(reader, parsedInput.filePaths, doesExists);
-  let contents = filterRequiredContents(fileDetails, parsedInput, fetchFrom, command);
-  return filterCommandOutput(contents).join('\n');
+  let contents = formatContents(fileDetails, parsedInput, this.filterFrom, this.command);
+  return filterCommandOutput(contents).join("\n");
 };
 
 const runHead = function(reader, userArgs, doesExists) {
-  return runCommand(reader, userArgs, doesExists, fetchFromBeginning);
+  let headParams = {
+    validator: validateHead,
+    command: "head",
+    filterFrom: filterContents.bind("null", fetchFromBeginning)
+  };
+  return runCommand.bind(headParams)(reader, userArgs, doesExists);
 };
 
 const runTail = function(reader, userArgs, doesExists) {
-  return runCommand(reader, userArgs, doesExists, fetchFromEnd);
+  let tailParams = {
+    validator: validateTail,
+    command: "tail",
+    filterFrom: filterContents.bind("null", fetchFromEnd)
+  };
+  return runCommand.bind(tailParams)(reader, userArgs, doesExists);
 };
 
 exports.read = read;
 exports.createDetailsOf = createDetailsOf;
-exports.filterRequiredContents = filterRequiredContents;
+exports.formatContents = formatContents;
 exports.runHead = runHead;
 exports.filterContents = filterContents;
 exports.fetchFromBeginning = fetchFromBeginning;
