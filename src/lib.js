@@ -5,16 +5,6 @@ const read = function(reader, file) {
   return reader(file, "utf-8");
 };
 
-const createDetailsOf = function(reader, filePaths, doesExists) {
-  return filePaths.map(fileName => {
-    let content = null;
-    if (doesExists(fileName)) {
-      content = read(reader, fileName);
-    }
-    return { fileName, content };
-  });
-};
-
 const fetchFromBeginning = function(content, count) {
   return content.slice(0, count);
 };
@@ -36,26 +26,25 @@ const selectErrorMessage = function(command) {
   return filePath => command + ": " + filePath + ": No such file or directory";
 };
 
-const createHeading = file => "==> " + file.fileName + " <==";
-
-const isNull = value => value == null;
+const createHeading = filePath => "==> " + filePath + " <==";
 
 const formatContents = function(
-  fileDetails,
-  { option, count },
+  { option, count, filePaths },
   fetchFrom,
-  command
+  command,
+  doesExists,
+  reader
 ) {
   let delimiters = { "-n": "\n", "-c": "" };
   let errorMessage = selectErrorMessage(command);
-  let lines = fileDetails.reduce((texts, file) => {
-    if (isNull(file.content)) {
-      texts.push(errorMessage(file.fileName));
+  let lines = filePaths.reduce((texts, filePath) => {
+    if (!doesExists(filePath)) {
+      texts.push(errorMessage(filePath));
       return texts;
     }
-
-    texts.push(createHeading(file));
-    texts.push(fetchFrom(file.content, count, delimiters[option]));
+    let  content = read(reader, filePath);
+    texts.push(createHeading(filePath));
+    texts.push(fetchFrom(content, count, delimiters[option]));
     return texts;
   }, []);
 
@@ -69,8 +58,7 @@ const runCommand = function(reader, userArgs, doesExists) {
     return this.validator(parsedInput);
   }
 
-  let fileDetails = createDetailsOf(reader, parsedInput.filePaths, doesExists);
-  let contents = formatContents(fileDetails, parsedInput, this.filterFrom, this.command);
+  let contents = formatContents(parsedInput, this.filterFrom, this.command, doesExists, reader);
   return filterCommandOutput(contents).join("\n");
 };
 
@@ -93,7 +81,6 @@ const runTail = function(reader, userArgs, doesExists) {
 };
 
 exports.read = read;
-exports.createDetailsOf = createDetailsOf;
 exports.formatContents = formatContents;
 exports.runHead = runHead;
 exports.filterContents = filterContents;
