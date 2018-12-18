@@ -1,12 +1,11 @@
 const assert = require("assert");
 const {
-  read,
   filterContents,
   runHead,
   fetchFromBeginning,
   fetchFromEnd,
   runTail,
-  formatContents
+  getRequiredContents
 } = require("../../src/library/lib.js");
 
 const mockReader = function(expectedFiles) {
@@ -24,21 +23,7 @@ const mockValidator = function(expectedFiles) {
   };
 };
 
-describe("read", function() {
-  it("should return a string i.e the whole content of provided file", function() {
-    let readHelloWorld = mockReader({ "../testFile": "helloWorld" });
-
-    assert.equal(read(readHelloWorld, "../testFile"), "helloWorld");
-  });
-
-  it("should return an empty string when an empty file is provided", function() {
-    let readEmptyFile = mockReader({ "../testEmptyFile": "" });
-
-    assert.equal(read(readEmptyFile, "../testEmptyFile"), "");
-  });
-});
-
-describe("formatContents", function() {
+describe("getRequiredContents", function() {
   let file1Content =
     "this is a line 1\n" +
     "this is a line 2\n" +
@@ -49,78 +34,78 @@ describe("formatContents", function() {
   let doesExists = mockValidator({'file1': file1Content, 'file2': file2Content});
 
   it("should return an array with a file path and an empty string when required lines is 0 ", function() {
-    let actual = formatContents(
+    let actual = getRequiredContents(
       {
         count: 0,
         option: "-n",
         filePaths: ['file1']
       },
       filterContents.bind('null', fetchFromBeginning),      
-      "head",
+      
       doesExists,
       reader
     );
 
-    assert.deepEqual(actual, ["==> file1 <==", ""]);
+    assert.deepEqual(actual, [{filePath: 'file1', filteredContents: ''}]);
   });
 
   it("should return an array with file path and lines of fileContent equal to the count", function() {
-    let actualOutput = formatContents(
+    let actualOutput = getRequiredContents(
       { count: 2, option: "-n", filePaths : ['file1'] },
       filterContents.bind('null', fetchFromBeginning),      
-      "head", doesExists,
+       doesExists,
       reader
     );
-    let expectedOutput = [
-      "==> file1 <==",
-      "this is a line 1\nthis is a line 2"
+    let expectedOutput = [{filePath : 'file1',
+      filteredContents: "this is a line 1\nthis is a line 2"}
     ];
 
     assert.deepEqual(actualOutput, expectedOutput);
   });
 
   it("should return an array with file name and an empty string when char count is 0", function() {
-    let actual = formatContents(
+    let actual = getRequiredContents(
       { count: 0, option: "-c", filePaths:['file1'] },
       filterContents.bind('null', fetchFromBeginning),      
-      "head", doesExists,
+       doesExists,
       reader
     );
-    assert.deepEqual(actual, ["==> file1 <==", ""]);
+    assert.deepEqual(actual, [{filePath: 'file1', filteredContents: ''}]);
   });
 
   it("should return an array of error message when file content is null ", function() {
-    let actual = formatContents(
+    let actual = getRequiredContents(
       { count: 0, option: "-n", filePaths:['file4'] },
       filterContents.bind('null', fetchFromBeginning),      
-      "head", doesExists,
+       doesExists,
       reader
     );
 
-    assert.deepEqual(actual, ["head: file4: No such file or directory"]);
+    assert.deepEqual(actual, [{filePath: 'file4', filteredContents: null}]);
   });
 
   it("should return an array with file name  and string of length equal to char count", function() {
-    let actual = formatContents(
+    let actual = getRequiredContents(
       { count: 2, option: "-c", filePaths:['file1'] },
       filterContents.bind('null', fetchFromBeginning),
-       "head", doesExists,
+        doesExists,
        reader
     );
-    assert.deepEqual(actual, ["==> file1 <==", "th"]);
+    assert.deepEqual(actual, [{filePath: 'file1', filteredContents: 'th'}]);
   });
 
   it("should return required file content with file names when multiple files are provided", function() {
-    let actual = formatContents(
+    let actual = getRequiredContents(
       { count: 2, option: "-c", filePaths: ['file1', 'file2'] },
       filterContents.bind('null', fetchFromBeginning),
-      "head", doesExists,
+       doesExists,
       reader
     );
-    assert.deepEqual(actual, ["==> file1 <==", "th", "==> file2 <==", "th"]);
+    assert.deepEqual(actual, [{filePath: 'file1', filteredContents:"th"},
+  {filePath: 'file2', filteredContents: 'th'}]);
   });
 });
-
+ 
 describe("Head", function() {
   describe("runHead for basic operations", function() {
     let file1Content =

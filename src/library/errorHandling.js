@@ -37,9 +37,14 @@ const validateTail = function(params) {
   }
 };
 
+const existanceErrorMessage = function(command, filePath) {
+  return command + ": " + filePath + ": No such file or directory";
+};
+
 exports.isOptionInValid = isOptionInValid;
 exports.isNegativeOrZero = isNegativeOrZero;
 exports.isLineOption = isLineOption;
 exports.isCharOption = isCharOption;
 exports.validateHead = validateHead;
 exports.validateTail = validateTail;
+exports.existanceErrorMessage = existanceErrorMessage;
