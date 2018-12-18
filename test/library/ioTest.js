@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { parseInput } = require('../src/io.js');
+const { parseInput } = require('../../src/library/io.js');
 
 describe('parseInput', function() {
   it('should return an object with option as (c) when first index is (-c3)', function() {

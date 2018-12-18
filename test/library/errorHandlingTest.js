@@ -2,7 +2,7 @@ const assert = require('assert');
 const {isOptionInValid,
   isNegativeOrZero,
   isLineOption,
-  isCharOption} = require('../src/errorHandling.js');
+  isCharOption} = require('../../src/library/errorHandling.js');
 
 describe("isOptionInValid", function() {
   it("should return true when a number is given as a option", function() {

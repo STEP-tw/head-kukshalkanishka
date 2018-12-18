@@ -1,5 +1,5 @@
 const fs = require("fs");
-const { runHead } = require("./src/lib.js");
+const { runHead } = require("./src/library/lib.js");
 
 const main = function() {
   let reader = fs.readFileSync;
