@@ -2,7 +2,8 @@ const assert = require('assert');
 const {isOptionInValid,
   isNegativeOrZero,
   isLineOption,
-  isCharOption} = require('../../src/library/errorHandling.js');
+  isCharOption,
+  existanceErrorMessage} = require('../../src/library/errorHandling.js');
 
 describe("isOptionInValid", function() {
   it("should return true when a number is given as a option", function() {
@@ -54,5 +55,12 @@ describe("isNegativeOrZero", function() {
   it("should return true for negative and zero value", function() {
     assert.deepEqual(isNegativeOrZero(-12), true);
     assert.deepEqual(isNegativeOrZero(0), true);
+  });
+});
+
+describe('existance error message',() => {
+  it('should return the error message with provided command and fileName',() => {
+    let expectedOutput = 'head: file1: No such file or directory';
+    assert.equal(existanceErrorMessage('head', 'file1'), expectedOutput);
   });
 });

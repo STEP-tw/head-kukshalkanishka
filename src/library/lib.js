@@ -42,10 +42,13 @@ const createHeader = function(filePath) {
 const addHeaderIfMultipleFiles = function(files){
   if(files.length > 1){
     return  files.map(function(file){
-      file.header = createHeader(file.filePath);
-      return file;
+      file.header = '';
+      if(file.filteredContents != null){
+        file.header = createHeader(file.filePath);
       }
-    )};
+      return file;
+    })
+  };
   return files;
 }
 
@@ -56,8 +59,8 @@ const runCommand = function(reader, userArgs, doesExists, command) {
   }
   let requiredfiles = getRequiredContents(parsedInput, this.filterFrom, doesExists, reader);
 
-  let output = addHeaderIfMultipleFiles(requiredfiles, command);
-  return formatCommandOutput(output);
+  let output = addHeaderIfMultipleFiles(requiredfiles);
+  return formatCommandOutput(output, command);
 };
 
 const runHead = function(reader, userArgs, doesExists) {
