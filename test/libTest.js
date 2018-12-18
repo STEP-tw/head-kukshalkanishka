@@ -5,7 +5,8 @@ const {
   runHead,
   fetchFromBeginning,
   fetchFromEnd,
-  runTail
+  runTail,
+  formatContents
 } = require("../src/lib.js");
 
 const mockReader = function(expectedFiles) {
@@ -37,21 +38,27 @@ describe("read", function() {
   });
 });
 
-describe.skip("formatContents", function() {
+describe("formatContents", function() {
   let file1Content =
     "this is a line 1\n" +
     "this is a line 2\n" +
     "this is a line 3\n" +
     "this is a line 4 \n";
+  let file2Content = "this is a single line file";
+  let reader = mockReader({'file1': file1Content, 'file2': file2Content});
+  let doesExists = mockValidator({'file1': file1Content, 'file2': file2Content});
 
   it("should return an array with a file path and an empty string when required lines is 0 ", function() {
     let actual = formatContents(
       {
         count: 0,
-        option: "-n"
+        option: "-n",
+        filePaths: ['file1']
       },
       filterContents.bind('null', fetchFromBeginning),      
       "head",
+      doesExists,
+      reader
     );
 
     assert.deepEqual(actual, ["==> file1 <==", ""]);
@@ -59,10 +66,10 @@ describe.skip("formatContents", function() {
 
   it("should return an array with file path and lines of fileContent equal to the count", function() {
     let actualOutput = formatContents(
-      [{ fileName: "file1", content: file1Content }],
-      { count: 2, option: "-n" },
+      { count: 2, option: "-n", filePaths : ['file1'] },
       filterContents.bind('null', fetchFromBeginning),      
-      "head"
+      "head", doesExists,
+      reader
     );
     let expectedOutput = [
       "==> file1 <==",
@@ -74,44 +81,41 @@ describe.skip("formatContents", function() {
 
   it("should return an array with file name and an empty string when char count is 0", function() {
     let actual = formatContents(
-      [{ fileName: "file1", content: file1Content }],
-      { count: 0, option: "-c" },
+      { count: 0, option: "-c", filePaths:['file1'] },
       filterContents.bind('null', fetchFromBeginning),      
-      "head"
+      "head", doesExists,
+      reader
     );
     assert.deepEqual(actual, ["==> file1 <==", ""]);
   });
 
   it("should return an array of error message when file content is null ", function() {
     let actual = formatContents(
-      [{ fileName: "file1", content: null }],
-      { count: 0, option: "-n" },
+      { count: 0, option: "-n", filePaths:['file4'] },
       filterContents.bind('null', fetchFromBeginning),      
-      "head"
+      "head", doesExists,
+      reader
     );
 
-    assert.deepEqual(actual, ["head: file1: No such file or directory"]);
+    assert.deepEqual(actual, ["head: file4: No such file or directory"]);
   });
 
   it("should return an array with file name  and string of length equal to char count", function() {
     let actual = formatContents(
-      [{ fileName: "file1", content: file1Content }],
-      { count: 2, option: "-c" },
+      { count: 2, option: "-c", filePaths:['file1'] },
       filterContents.bind('null', fetchFromBeginning),
-       "head"
+       "head", doesExists,
+       reader
     );
     assert.deepEqual(actual, ["==> file1 <==", "th"]);
   });
 
   it("should return required file content with file names when multiple files are provided", function() {
     let actual = formatContents(
-      [
-        { fileName: "file1", content: file1Content },
-        { fileName: "file2", content: file1Content }
-      ],
-      { count: 2, option: "-c" },
+      { count: 2, option: "-c", filePaths: ['file1', 'file2'] },
       filterContents.bind('null', fetchFromBeginning),
-      "head"
+      "head", doesExists,
+      reader
     );
     assert.deepEqual(actual, ["==> file1 <==", "th", "==> file2 <==", "th"]);
   });
