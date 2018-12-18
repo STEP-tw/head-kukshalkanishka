@@ -40,16 +40,16 @@ const createHeader = function(filePath) {
 }
 
 const addHeaderIfMultipleFiles = function(files){
-  if(files.length > 1){
-    return  files.map(function(file){
-      file.header = '';
-      if(file.filteredContents != null){
-        file.header = createHeader(file.filePath);
-      }
-      return file;
-    })
-  };
-  return files;
+  if(files.length == 1){
+    return files;
+  }
+  return  files.map(function(file){
+    file.header = '';
+    if(file.filteredContents != null){
+      file.header = createHeader(file.filePath);
+    }
+    return file;
+  })
 }
 
 const runCommand = function(reader, userArgs, doesExists, command) {
