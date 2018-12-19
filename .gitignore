@@ -1,5 +1,7 @@
+ls
 *.sw?
 commentedText
 coverage
 .nyc_output
 .vscode/
+node_modules
