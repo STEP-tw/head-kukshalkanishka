@@ -65,7 +65,7 @@ const runCommand = function(reader, userArgs, doesExists, command) {
 
 const runHead = function(reader, userArgs, doesExists) {
   let headParams = {
-    validator: validateHead,
+    validator: validateHead,  
     command: "head",
     filterFrom: filterContents.bind("null", fetchFromBeginning)
   };
