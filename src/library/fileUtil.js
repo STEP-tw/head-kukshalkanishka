@@ -1,5 +1,7 @@
-const { parseInput, formatCommandOutput } = require("./io.js");
-const { validateHead, validateTail } = require("./errorHandling.js");
+const {parseInput} = require('./io.js');
+const {validateHead,
+   validateTail,
+   existanceErrorMessage} = require('./errorHandling.js');
 
 const fetchFromBeginning = function(content, count) {
   return content.slice(0, count);
@@ -19,72 +21,49 @@ const filterContents = function(fetcher, fileContent, count, delimiter) {
 };
 
 const getRequiredContents = function(parsedInput,fetchFrom,doesExists,reader) {
-  let {count, option, filePaths} = parsedInput;
-  let delimiters = { "-n": "\n", "-c": "" };
+let {count, option, filePaths} = parsedInput;
+let delimiters = { "-n": "\n", "-c": "" };
 
-  let requiredFiles = filePaths.reduce((texts, filePath) => {
-    let filteredContents = null;
-      if (doesExists(filePath)) {
-      let  fileContent = reader(filePath, 'utf-8');
-      filteredContents = fetchFrom(fileContent, count, delimiters[option]);
-    }
-    texts.push({filePath, filteredContents});
-    return texts;
-  }, []);
-
-  return requiredFiles;
-};
-
-const createHeader = function(filePath) {
-  return  `==> ${filePath} <==`;
-}
-
-const addHeaderIfMultipleFiles = function(files){
-  if(files.length == 1){
-    return files;
+let requiredFiles = filePaths.reduce((texts, filePath) => {
+  let filteredContents = null;
+  if (doesExists(filePath)) {
+    let  fileContent = reader(filePath, 'utf-8');
+    filteredContents = fetchFrom(fileContent, count, delimiters[option]);
   }
-  return  files.map(function(file){
-    file.header = '';
-    if(file.filteredContents != null){
-      file.header = createHeader(file.filePath);
-    }
-    return file;
-  })
-}
+  texts.push({filePath, filteredContents});
+  return texts;
+}, []);
 
-const runCommand = function(reader, userArgs, doesExists, command) {
-  let parsedInput = parseInput(userArgs);
-  if (this.validator(parsedInput)) {
-    return this.validator(parsedInput);
+return requiredFiles;
+};
+
+const runHead = function(reader, args, doesExists) {
+  let filterFrom = filterContents.bind("null", fetchFromBeginning);
+  return getRequiredContents(args, filterFrom, doesExists, reader);
+};
+
+const runTail = function(reader, args, doesExists) {
+  let filterFrom = filterContents.bind("null", fetchFromEnd)
+  return getRequiredContents(args, filterFrom, doesExists, reader);
+};
+
+const runCommand = function(userArgs, command, reader, doesExists) {
+  let operations  = {head : runHead, tail: runTail};
+  let validator = {head: validateHead, tail: validateTail};
+  let parsedInput = parseInput(userArgs);  
+
+  if (validator[command](parsedInput)) {
+    return {files: validator[command](parsedInput), isInputInvalid: true};
   }
-  let requiredfiles = getRequiredContents(parsedInput, this.filterFrom, doesExists, reader);
 
-  let output = addHeaderIfMultipleFiles(requiredfiles);
-  return formatCommandOutput(output, command);
-};
-
-const runHead = function(reader, userArgs, doesExists) {
-  let headParams = {
-    validator: validateHead,  
-    command: "head",
-    filterFrom: filterContents.bind("null", fetchFromBeginning)
-  };
-  return runCommand.bind(headParams)(reader, userArgs, doesExists, 'head');
-};
-
-const runTail = function(reader, userArgs, doesExists) {
-  let tailParams = {
-    validator: validateTail,
-    command: "tail",
-    filterFrom: filterContents.bind("null", fetchFromEnd)
-  };
-  return runCommand.bind(tailParams)(reader, userArgs, doesExists, 'tail');
+  let output = operations[command](reader, parsedInput, doesExists);
+  return {files : output, isInputInvalid: false};
 };
 
 exports.getRequiredContents = getRequiredContents;
-exports.runHead = runHead;
 exports.filterContents = filterContents;
 exports.fetchFromBeginning = fetchFromBeginning;
 exports.fetchFromEnd = fetchFromEnd;
 exports.runHead = runHead;
 exports.runTail = runTail;
+exports.runCommand = runCommand;

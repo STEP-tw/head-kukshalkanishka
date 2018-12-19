@@ -1,5 +1,3 @@
-const {existanceErrorMessage} = require('./errorHandling.js');
-
 const isCountOption = function(option) {
   return isFinite(option.slice(1)) && option.startsWith('-');
 }
@@ -54,18 +52,4 @@ const parseInput = function(userArgs) {
   return { filePaths, option, count };
 };
 
-const formatCommandOutput = function(files, command) {
-  let formatedOutput = files.map(function(file){
-    if(file.filteredContents == null) {
-      file.filteredContents = existanceErrorMessage(command,file.filePath);
-    }
-    if(files.length <= 1){
-      return file.filteredContents;
-    }
-    return file.header + '\n' + file.filteredContents;
-  });
-return formatedOutput.join('\n');
-}
-
 exports.parseInput = parseInput;
-exports.formatCommandOutput = formatCommandOutput;
