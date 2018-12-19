@@ -6,7 +6,7 @@ const {
   fetchFromEnd,
   runTail,
   getRequiredContents
-} = require("../../src/library/lib.js");
+} = require("../../src/library/fileUtil.js");
 
 const mockReader = function(expectedFiles) {
   return function(actualPath) {
