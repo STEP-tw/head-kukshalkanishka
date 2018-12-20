@@ -99,6 +99,13 @@ describe("format output of tail command", function() {
 
       assert.equal(actualOutput, expectedOutput);
     });
+
+    it("should return file not found log when invalid file is given", () => {
+      let actualOutput = formatOutput(["-n", "2", "file2"], "tail", fs);
+      let expectedOutput = "tail: file2: No such file or directory";
+
+      assert.equal(actualOutput, expectedOutput);
+    });
   });
 });
 
@@ -194,6 +201,13 @@ describe("format output of head command", function() {
     it("should provide error message when invalid line count is a alphabet", function() {
       let actualOutput = formatOutput(["-n", "xy", "file1"], "head", fs);
       let expectedOutput = "head: illegal line count -- xy";
+
+      assert.equal(actualOutput, expectedOutput);
+    });
+
+    it("should return file not found log when invalid file is given", () => {
+      let actualOutput = formatOutput(["-n", "2", "file2"], "head", fs);
+      let expectedOutput = "head: file2: No such file or directory";
 
       assert.equal(actualOutput, expectedOutput);
     });
