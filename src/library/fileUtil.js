@@ -1,9 +1,5 @@
 const { parseInput } = require("./parseInput.js");
-const {
-  validateHead,
-  validateTail,
-  existanceErrorMessage
-} = require("./errorHandling.js");
+const { validateHead, validateTail } = require("./errorHandling.js");
 
 const fetchFromBeginning = function(content, count) {
   return content.slice(0, count);
@@ -22,19 +18,14 @@ const filterContents = function(fetcher, fileContent, count, delimiter) {
   return requiredLines.join(delimiter);
 };
 
-const getRequiredContents = function(
-  parsedInput,
-  fetchFrom,
-  doesExists,
-  reader
-) {
+const getRequiredContents = function(parsedInput, fetchFrom, fs) {
   let { count, option, filePaths } = parsedInput;
   let delimiters = { "-n": "\n", "-c": "" };
 
   let requiredFiles = filePaths.reduce((texts, filePath) => {
     let filteredContents = null;
-    if (doesExists(filePath)) {
-      let fileContent = reader(filePath, "utf-8");
+    if (fs.existsSync(filePath)) {
+      let fileContent = fs.readFileSync(filePath, "utf-8");
       filteredContents = fetchFrom(fileContent, count, delimiters[option]);
     }
     texts.push({ filePath, filteredContents });
@@ -44,17 +35,17 @@ const getRequiredContents = function(
   return requiredFiles;
 };
 
-const runHead = function(reader, args, doesExists) {
+const runHead = function(args, fs) {
   let filterFrom = filterContents.bind("null", fetchFromBeginning);
-  return getRequiredContents(args, filterFrom, doesExists, reader);
+  return getRequiredContents(args, filterFrom, fs);
 };
 
-const runTail = function(reader, args, doesExists) {
+const runTail = function(args, fs) {
   let filterFrom = filterContents.bind("null", fetchFromEnd);
-  return getRequiredContents(args, filterFrom, doesExists, reader);
+  return getRequiredContents(args, filterFrom, fs);
 };
 
-const runCommand = function(userArgs, command, reader, doesExists) {
+const runCommand = function(userArgs, command, fs) {
   let operations = { head: runHead, tail: runTail };
   let validator = { head: validateHead, tail: validateTail };
   let parsedInput = parseInput(userArgs);
@@ -63,7 +54,7 @@ const runCommand = function(userArgs, command, reader, doesExists) {
     return { files: validator[command](parsedInput), isInputInvalid: true };
   }
 
-  let output = operations[command](reader, parsedInput, doesExists);
+  let output = operations[command](parsedInput, fs);
   return { files: output, isInputInvalid: false };
 };
 

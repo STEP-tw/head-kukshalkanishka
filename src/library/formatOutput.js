@@ -17,13 +17,8 @@ const addHeaderIfMultipleFiles = function(files, command) {
   });
 };
 
-const formatOutput = function(userArgs, reader, doesExists, command) {
-  let { isInputInvalid, files } = runCommand(
-    userArgs,
-    command,
-    reader,
-    doesExists
-  );
+const formatOutput = function(userArgs, command, fs) {
+  let { isInputInvalid, files } = runCommand(userArgs, command, fs);
   if (isInputInvalid) {
     return files;
   }
