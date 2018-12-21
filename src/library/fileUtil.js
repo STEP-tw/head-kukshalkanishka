@@ -42,16 +42,9 @@ const runTail = function(args, fs) {
   return getRequiredContents(args, filterFrom, fs);
 };
 
-const runCommand = function(parsedInput, command, fs) {
-  let operations = { head: runHead, tail: runTail };
-  let files = operations[command](parsedInput, fs);
-  return files;
-};
-
 exports.getRequiredContents = getRequiredContents;
 exports.filterContents = filterContents;
 exports.fetchFromBeginning = fetchFromBeginning;
 exports.fetchFromEnd = fetchFromEnd;
 exports.runHead = runHead;
 exports.runTail = runTail;
-exports.runCommand = runCommand;

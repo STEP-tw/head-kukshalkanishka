@@ -3,7 +3,9 @@ const {
   filterContents,
   fetchFromBeginning,
   fetchFromEnd,
-  getRequiredContents
+  getRequiredContents,
+  runHead,
+  runTail
 } = require("../../src/library/fileUtil.js");
 
 const { mockReader, mockValidator } = require("../helpers/mockFunctions.js");
