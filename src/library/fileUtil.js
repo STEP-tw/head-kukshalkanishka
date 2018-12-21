@@ -32,7 +32,7 @@ const getRequiredContents = function(parsedInput, fetchFrom, fs) {
   return requiredFiles;
 };
 
-const runHead = function(args, fs) {
+const head = function(args, fs) {
   let filterFrom = filterContents.bind("null", fetchFromBeginning);
   return getRequiredContents(args, filterFrom, fs);
 };
@@ -46,5 +46,5 @@ exports.getRequiredContents = getRequiredContents;
 exports.filterContents = filterContents;
 exports.fetchFromBeginning = fetchFromBeginning;
 exports.fetchFromEnd = fetchFromEnd;
-exports.runHead = runHead;
+exports.head = head;
 exports.runTail = runTail;

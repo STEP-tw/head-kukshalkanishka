@@ -4,7 +4,7 @@ const {
   fetchFromBeginning,
   fetchFromEnd,
   getRequiredContents,
-  runHead,
+  head,
   runTail
 } = require("../../src/library/fileUtil.js");
 
@@ -297,10 +297,7 @@ describe("run head", function() {
     let fs = { readFileSync, existsSync };
 
     it("should return one line content from end of file when the required num of lines is 1", function() {
-      let actual = runHead(
-        { count: "1", option: "-n", filePaths: ["file1"] },
-        fs
-      );
+      let actual = head({ count: "1", option: "-n", filePaths: ["file1"] }, fs);
       let expected = [
         { filteredContents: "this is a line 1", filePath: "file1" }
       ];
@@ -308,10 +305,7 @@ describe("run head", function() {
     });
 
     it("should return the whole file when required num of lines is equal to file length", function() {
-      let actual = runHead(
-        { count: "4", option: "-n", filePaths: ["file1"] },
-        fs
-      );
+      let actual = head({ count: "4", option: "-n", filePaths: ["file1"] }, fs);
       let filteredContents =
         "this is a line 1\n" +
         "this is a line 2\n" +
@@ -323,7 +317,7 @@ describe("run head", function() {
     });
 
     it("should return the whole file when required num of lines is more than file length", function() {
-      let actual = runHead(
+      let actual = head(
         { count: "10", option: "-n", filePaths: ["file1"] },
         fs
       );
@@ -338,27 +332,21 @@ describe("run head", function() {
     });
 
     it("should return a charactor when required num of chars is 1", function() {
-      let actual = runHead(
-        { option: "-c", count: "1", filePaths: ["file1"] },
-        fs
-      );
+      let actual = head({ option: "-c", count: "1", filePaths: ["file1"] }, fs);
       const expected = [{ filePath: "file1", filteredContents: "t" }];
 
       assert.deepEqual(actual, expected);
     });
 
     it("should return required num of chars from end of the file", function() {
-      let actual = runHead(
-        { option: "-c", count: "4", filePaths: ["file1"] },
-        fs
-      );
+      let actual = head({ option: "-c", count: "4", filePaths: ["file1"] }, fs);
       const expected = [{ filePath: "file1", filteredContents: "this" }];
 
       assert.deepEqual(actual, expected);
     });
 
     it("should return contents and filePaths of all files when multiple files are given", function() {
-      let actual = runHead(
+      let actual = head(
         { option: "-c", count: "4", filePaths: ["file1", "file2"] },
         fs
       );
@@ -377,10 +365,7 @@ describe("run head", function() {
     let fs = { readFileSync, existsSync };
 
     it("should provide filteredContents as null when invalid file is given", function() {
-      let actual = runHead(
-        { option: "-n", count: "4", filePaths: ["file2"] },
-        fs
-      );
+      let actual = head({ option: "-n", count: "4", filePaths: ["file2"] }, fs);
       const expected = [{ filePath: "file2", filteredContents: null }];
 
       assert.deepEqual(actual, expected);
