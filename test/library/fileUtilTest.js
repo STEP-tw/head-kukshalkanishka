@@ -5,7 +5,7 @@ const {
   fetchFromEnd,
   getRequiredContents,
   head,
-  runTail
+  tail
 } = require("../../src/library/fileUtil.js");
 
 const { mockReader, mockValidator } = require("../helpers/mockFunctions.js");
@@ -173,7 +173,7 @@ describe("fetchFromBeginning", () => {
 });
 
 describe("run tail", function() {
-  describe("runTail basic operation", function() {
+  describe("tail basic operation", function() {
     let file1Content =
       "this is a line 1\n" +
       "this is a line 2\n" +
@@ -189,10 +189,7 @@ describe("run tail", function() {
     let fs = { readFileSync, existsSync };
 
     it("should return one line content from end of file when the required num of lines is 1", function() {
-      let actual = runTail(
-        { count: "1", option: "-n", filePaths: ["file1"] },
-        fs
-      );
+      let actual = tail({ count: "1", option: "-n", filePaths: ["file1"] }, fs);
       let expected = [
         { filteredContents: "this is last line", filePath: "file1" }
       ];
@@ -200,10 +197,7 @@ describe("run tail", function() {
     });
 
     it("should return the whole file when required num of lines is equal to file length", function() {
-      let actual = runTail(
-        { count: "4", option: "-n", filePaths: ["file1"] },
-        fs
-      );
+      let actual = tail({ count: "4", option: "-n", filePaths: ["file1"] }, fs);
       let filteredContents =
         "this is a line 1\n" +
         "this is a line 2\n" +
@@ -215,7 +209,7 @@ describe("run tail", function() {
     });
 
     it("should return the whole file when required num of lines is more than file length", function() {
-      let actual = runTail(
+      let actual = tail(
         { count: "10", option: "-n", filePaths: ["file1"] },
         fs
       );
@@ -230,27 +224,21 @@ describe("run tail", function() {
     });
 
     it("should return a charactor when required num of chars is 1", function() {
-      let actual = runTail(
-        { option: "-c", count: "1", filePaths: ["file1"] },
-        fs
-      );
+      let actual = tail({ option: "-c", count: "1", filePaths: ["file1"] }, fs);
       const expected = [{ filePath: "file1", filteredContents: "e" }];
 
       assert.deepEqual(actual, expected);
     });
 
     it("should return required num of chars from end of the file", function() {
-      let actual = runTail(
-        { option: "-c", count: "4", filePaths: ["file1"] },
-        fs
-      );
+      let actual = tail({ option: "-c", count: "4", filePaths: ["file1"] }, fs);
       const expected = [{ filePath: "file1", filteredContents: "line" }];
 
       assert.deepEqual(actual, expected);
     });
 
     it("should return contents and filePaths of all files when multiple files are given", function() {
-      let actual = runTail(
+      let actual = tail(
         { option: "-c", count: "4", filePaths: ["file1", "file2"] },
         fs
       );
@@ -269,10 +257,7 @@ describe("run tail", function() {
     let fs = { readFileSync, existsSync };
 
     it("should provide filteredContents as null when invalid file is given", function() {
-      let actual = runTail(
-        { option: "-n", count: "4", filePaths: ["file2"] },
-        fs
-      );
+      let actual = tail({ option: "-n", count: "4", filePaths: ["file2"] }, fs);
       const expected = [{ filePath: "file2", filteredContents: null }];
 
       assert.deepEqual(actual, expected);

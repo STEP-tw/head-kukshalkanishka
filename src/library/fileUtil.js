@@ -37,7 +37,7 @@ const head = function(args, fs) {
   return getRequiredContents(args, filterFrom, fs);
 };
 
-const runTail = function(args, fs) {
+const tail = function(args, fs) {
   let filterFrom = filterContents.bind("null", fetchFromEnd);
   return getRequiredContents(args, filterFrom, fs);
 };
@@ -47,4 +47,4 @@ exports.filterContents = filterContents;
 exports.fetchFromBeginning = fetchFromBeginning;
 exports.fetchFromEnd = fetchFromEnd;
 exports.head = head;
-exports.runTail = runTail;
+exports.tail = tail;
