@@ -1,9 +1,16 @@
 const fs = require("fs");
+const { parseInput } = require("./src/library/parseInput.js");
+const { validateHead } = require("./src/library/errorHandling.js");
 const { formatOutput } = require("./src/library/formatOutput.js");
+const { runCommand } = require("./src/library/fileUtil.js");
 
 const main = function() {
-  let userArgs = process.argv.slice(2);
-  console.log(formatOutput(userArgs, "head", fs));
+  let parsedInput = parseInput(process.argv.slice(2));
+  if (validateHead(parsedInput).isInvalid) {
+    return validateHead(parsedInput).message;
+  }
+  let output = runCommand(parsedInput, "head", fs);
+  return formatOutput(output, "head");
 };
 
-main();
+console.log(main());

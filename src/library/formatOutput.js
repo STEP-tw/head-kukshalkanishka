@@ -1,4 +1,3 @@
-const { runCommand } = require("./fileUtil.js");
 const { existanceErrorMessage } = require("./errorHandling");
 
 const createHeader = function(filePath) {
@@ -17,11 +16,7 @@ const addHeaderIfMultipleFiles = function(files, command) {
   });
 };
 
-const formatOutput = function(userArgs, command, fs) {
-  let { isInputInvalid, files } = runCommand(userArgs, command, fs);
-  if (isInputInvalid) {
-    return files;
-  }
+const formatOutput = function(files, command) {
   let formatedOutput = addHeaderIfMultipleFiles(files, command);
   return formatedOutput.join("\n");
 };

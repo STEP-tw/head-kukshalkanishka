@@ -1,9 +1,13 @@
-const assert = require('assert');
-const {isOptionInValid,
+const assert = require("assert");
+const {
+  isOptionInValid,
   isNegativeOrZero,
   isLineOption,
   isCharOption,
-  existanceErrorMessage} = require('../../src/library/errorHandling.js');
+  existanceErrorMessage,
+  validateTail,
+  validateHead
+} = require("../../src/library/errorHandling.js");
 
 describe("isOptionInValid", function() {
   it("should return true when a number is given as a option", function() {
@@ -58,9 +62,103 @@ describe("isNegativeOrZero", function() {
   });
 });
 
-describe('existance error message',() => {
-  it('should return the error message with provided command and fileName',() => {
-    let expectedOutput = 'head: file1: No such file or directory';
-    assert.equal(existanceErrorMessage('head', 'file1'), expectedOutput);
+describe("existance error message", () => {
+  it("should return the error message with provided command and fileName", () => {
+    let expectedOutput = "head: file1: No such file or directory";
+    assert.equal(existanceErrorMessage("head", "file1"), expectedOutput);
+  });
+});
+
+describe("validate tail", () => {
+  it("should provide error message when invalid option is given", function() {
+    let actualOutput = validateTail({
+      option: "-v",
+      count: "3",
+      files: ["file1", "file2"]
+    });
+
+    let expectedOutput = {
+      message:
+        "tail: illegal option -- v\n" +
+        "usage: tail [-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]",
+      isInvalid: true
+    };
+
+    assert.deepEqual(actualOutput, expectedOutput);
+  });
+
+  it("should provide error message when invalid byte count is a alphabet", function() {
+    let actualOutput = validateTail({
+      option: "-c",
+      count: "xy",
+      files: ["file1", "file2"]
+    });
+
+    let expectedOutput = {
+      message: "tail: illegal offset -- xy",
+      isInvalid: true
+    };
+
+    assert.deepEqual(actualOutput, expectedOutput);
+  });
+
+  it("should provide error message when invalid line count is a alphabet", function() {
+    let actualOutput = validateTail({
+      option: "-n",
+      count: "xy",
+      files: ["file1", "file2"]
+    });
+    let expectedOutput = {
+      message: "tail: illegal offset -- xy",
+      isInvalid: true
+    };
+
+    assert.deepEqual(actualOutput, expectedOutput);
+  });
+});
+
+describe("validate head", function() {
+  it("should provide error message when invalid option is given", function() {
+    let actualOutput = validateHead({
+      option: "-v",
+      count: "3",
+      files: ["file1", "file2"]
+    });
+    let expectedOutput = {
+      message:
+        "head: illegal option -- v\n" +
+        "usage: head [-n lines | -c bytes] [file ...]",
+      isInvalid: true
+    };
+    assert.deepEqual(actualOutput, expectedOutput);
+  });
+
+  it("should provide error message when invalid byte count is a alphabet", function() {
+    let actualOutput = validateHead({
+      option: "-c",
+      count: "xy",
+      files: ["file1", "file2"]
+    });
+    let expectedOutput = {
+      message: "head: illegal byte count -- xy",
+      isInvalid: true
+    };
+
+    assert.deepEqual(actualOutput, expectedOutput);
+  });
+
+  it("should provide error message when invalid line count is a alphabet", function() {
+    let actualOutput = validateHead({
+      option: "-n",
+      count: "xy",
+      files: ["file1", "file2"]
+    });
+
+    let expectedOutput = {
+      message: "head: illegal line count -- xy",
+      isInvalid: true
+    };
+
+    assert.deepEqual(actualOutput, expectedOutput);
   });
 });

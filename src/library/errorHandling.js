@@ -7,33 +7,44 @@ const isOptionInValid = option =>
 
 const isNegativeOrZero = num => num <= 0;
 
-const isHeadCountInvalid = count =>
-  isNegativeOrZero(count) || isNaN(count);
+const isHeadCountInvalid = count => isNegativeOrZero(count) || isNaN(count);
 
 const validateHead = function(params) {
   const usage = "usage: head [-n lines | -c bytes] [file ...]";
   let choices = { "-n": "line", "-c": "byte" };
+  let message = "";
+  let isInvalid = false;
 
   if (isOptionInValid(params.option)) {
-    return "head: illegal option -- " + params.option.substr(1) + "\n" + usage;
+    message =
+      "head: illegal option -- " + params.option.substr(1) + "\n" + usage;
+    isInvalid = true;
   }
   if (isHeadCountInvalid(params.count)) {
-    return (
-      "head: illegal " + choices[params.option] + " count -- " + params.count
-    );
+    message =
+      "head: illegal " + choices[params.option] + " count -- " + params.count;
+    isInvalid = true;
   }
+  return { message, isInvalid };
 };
 
 const validateTail = function(params) {
   const usage =
     "usage: tail [-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]";
-  
+  let message = "";
+  let isInvalid = false;
+
   if (isOptionInValid(params.option)) {
-    return "tail: illegal option -- " + params.option.substr(1) + "\n" + usage;
+    (message =
+      "tail: illegal option -- " + params.option.substr(1) + "\n" + usage),
+      (isInvalid = true);
   }
+
   if (isNaN(params.count)) {
-    return "tail: illegal offset -- " + params.count;
+    (message = "tail: illegal offset -- " + params.count), (isInvalid = true);
   }
+
+  return { message, isInvalid };
 };
 
 const existanceErrorMessage = function(command, filePath) {

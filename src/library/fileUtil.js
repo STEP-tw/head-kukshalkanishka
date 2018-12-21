@@ -1,6 +1,3 @@
-const { parseInput } = require("./parseInput.js");
-const { validateHead, validateTail } = require("./errorHandling.js");
-
 const fetchFromBeginning = function(content, count) {
   return content.slice(0, count);
 };
@@ -45,17 +42,10 @@ const runTail = function(args, fs) {
   return getRequiredContents(args, filterFrom, fs);
 };
 
-const runCommand = function(userArgs, command, fs) {
+const runCommand = function(parsedInput, command, fs) {
   let operations = { head: runHead, tail: runTail };
-  let validator = { head: validateHead, tail: validateTail };
-  let parsedInput = parseInput(userArgs);
-
-  if (validator[command](parsedInput)) {
-    return { files: validator[command](parsedInput), isInputInvalid: true };
-  }
-
-  let output = operations[command](parsedInput, fs);
-  return { files: output, isInputInvalid: false };
+  let files = operations[command](parsedInput, fs);
+  return files;
 };
 
 exports.getRequiredContents = getRequiredContents;
