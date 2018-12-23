@@ -1,7 +1,7 @@
 const fs = require("fs");
-const { parseInput } = require("./src/library/parseInput.js");
+const { parseInput } = require("./src/io/parseInput.js");
 const { validateHead } = require("./src/library/errorHandling.js");
-const { formatOutput } = require("./src/library/formatOutput.js");
+const { formatOutput } = require("./src/io/formatOutput.js");
 const { head } = require("./src/library/fileUtil.js");
 
 const main = function() {

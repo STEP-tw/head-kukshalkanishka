@@ -1,5 +1,5 @@
 const assert = require("assert");
-const { formatOutput } = require("../../src/library/formatOutput.js");
+const { formatOutput } = require("../../src/io/formatOutput.js");
 
 describe("formatOutput", function() {
   it("should return error message when filteredContents is null for head command", function() {

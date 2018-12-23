@@ -1,4 +1,4 @@
-const { existanceErrorMessage } = require("./errorHandling");
+const { existanceErrorMessage } = require("../library/errorHandling");
 
 const createHeader = function(filePath) {
   return `==> ${filePath} <==`;
